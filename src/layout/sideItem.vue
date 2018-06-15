@@ -1,48 +1,50 @@
 <template>
     <div class="menuItem">
-        
-        <template v-for="(name,path,listIndex) in kinds">
-            <!-- 有子路由的 -->
-            <!-- <el-submenu v-if="list.children && list.children.length > 0" :index="list.name" :key="listIndex">
+        <el-menu default-active="3-1" class="el-menu-vertical-demo">
+            <el-submenu index="1">
                 <template slot="title">
-                    <i v-if="list.meta.icon" :class="list.meta.icon"></i>
-                    <span slot="title">{{ routeName(list) }}</span>
+                  <span slot="title">实体书分类</span>
                 </template>
-                <template v-for="(item,itemIndex) in list.children"> -->
-                    <!-- 子路由里还有子路由的 -->
-                    <!-- <my-side-item v-if="item.children && list.children.length > 0" :json="[item]" :key="itemIndex"></my-side-item> -->
-
-                    <!-- 子路由里没有子路由的 -->
-                    <!-- <router-link v-else :to="{name: item.name}" :key="itemIndex">
-                        <el-menu-item :index="item.name">
-                            <i v-if="item.meta.icon" :class="item.meta.icon"></i>
-                            <span slot="title">{{ routeName(item) }}</span>
-                        </el-menu-item>
-                    </router-link>
-                </template>
-            </el-submenu> -->
-
-            <!-- 没有子路由的 -->
-            
-            <router-link :to="{name:path}" :key="listIndex">
-                <el-menu-item :index="name">
-                    <!-- <i v-if="list.meta.icon" :class="list.meta.icon"></i> -->
-                    <span slot="title">{{name}}</span>
+                <!-- <el-menu-item-group > -->
+                    <div>
+                        <!-- <router-link  :to="{name:path}" > -->
+                            <el-menu-item v-for="(name,id,index) in kinds" :key="index" :index="1-index" @click="choseRealBook(name,id)">
+                            {{name}}
+                            </el-menu-item>
+                        <!-- </router-link> -->
+                    </div>
+                <!-- </el-menu-item-group> -->
+            </el-submenu>
+            <el-menu-item index="2">
+              <span slot="title">二手书</span>
+            </el-menu-item>
+            <el-submenu index="3">
+              <span slot="title">电子书</span>
+                <div v-for="(name,id,index) in kinds" :key="index">
+                <el-menu-item :index="120-index" @click="choseBook(id,name)">
+                    {{name}}
                 </el-menu-item>
-            </router-link>
-        </template>
+                </div>
+            </el-submenu>
+        </el-menu>
     </div>
 </template>
 <script>
 import { mapState } from 'vuex'
 export default {
     name: 'menuItem',
+    data(){
+        return {
+            
+        };
+    },
     props: {
         json: Array
     },
     created:function(){
         // this.$store.dispatch('set_kinds',['1','2','3','4'])
-        alert(kinds)
+        // alert(kinds)
+        // window.alert('sdfsdf')
     },
     computed: {
         ...mapState([
@@ -62,11 +64,26 @@ export default {
         },
         kindName(){
             
+        },
+        choseBook(id,name){
+            let ebook = new Array(id,name)
+            this.$store.commit('set_Ebook',ebook)
+            this.$router.push({path:'/index/ebook/'+name})
+        },
+        choseRealBook(name,id){
+            let real = new Array(id,name)
+            this.$store.commit('set_RealBook',real)
+            this.$router.push({path:'/index/realbook/'+name})
         }
     }
 }
 </script>
 <style lang='stylus'>
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+    a {
+        display: block;
+    }
+  }
 .menuItem {
     a {
         display: block;

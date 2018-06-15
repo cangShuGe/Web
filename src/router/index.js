@@ -13,9 +13,8 @@ const login = () => import('@/pages/login/login')
 // other
 const page401 = () => import('@/pages/other/page401')
 const page404 = () => import('@/pages/other/page404')
-const pageXuanhuan = () => import('@/pages/index/children/manyMenu/xuanhuan')
-const pageXiuzhen = () => import('@/pages/index/children/manyMenu/xiuzhen')
-const pageMingzhu = () => import('@/pages/index/children/manyMenu/mingzhu')
+const realbook = () => import('@/pages/index/children/manyMenu/realbook')
+const ebook = () => import('@/pages/index/children/manyMenu/ebook')
 
 Vue.use(Router)
 
@@ -34,38 +33,21 @@ export const sideRoutes = [
         name: 'home',
         path: '/:id',
         component: home,
-        // redirect:'/index/children/manyMenu/:id',
+        redirect:'/index/realbook/主页',
         meta: {
             icon: 'el-icon-my-home',
             title: '主页'
         }
     },
     {
-        name: 'xuanhuan',
-        path: '/index/xuanhuan',
-        component: pageXuanhuan,
-        meta: {
-            icon: 'el-icon-my-ravelry',
-            title: '示例'
-        }
+        name : 'RealBook',
+        path : '/index/realbook/:id',
+        component:realbook,
     },
     {
-        name: 'xiuzhen',
-        path: '/index/xiuzhen',
-        component: pageXiuzhen,
-        meta: {
-            icon: 'el-icon-my-ravelry',
-            title: '示例'
-        }
-    },
-    {
-        name: 'mingzhu',
-        path: '/index/mingzhu',
-        component: pageMingzhu,
-        meta: {
-            icon: 'el-icon-my-ravelry',
-            title: '示例'
-        }
+        name : 'Ebook',
+        path : '/index/ebook/:id',
+        component:ebook,
     },
     {
         name: 'manyMenu',

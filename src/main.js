@@ -3,6 +3,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
+import vueNumTo from 'vue-num-to'
 
 // css
 import '@/assets/css/reset.css'
@@ -43,7 +44,7 @@ Vue.use(VueProgressBar, {
     failedColor: 'red',
     thickness: '2px'
 })
-
+Vue.use(vueNumTo)
 /* eslint-disable no-new */
 new Vue({
     el: '#app',

@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 let base = '';
+// base = process.env.api.host;
 export const postRequest = (url, params) => {
   return axios({
     method: 'post',

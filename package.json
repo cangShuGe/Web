@@ -19,6 +19,7 @@
         "mockjs": "^1.0.1-beta3",
         "vue": "^2.5.16",
         "vue-progressbar": "^0.7.3",
+        "vue-num-to": "^1.0.2",
         "vue-router": "^3.0.1",
         "vuex": "^3.0.1"
     },

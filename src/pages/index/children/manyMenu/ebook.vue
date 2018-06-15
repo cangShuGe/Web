@@ -1,5 +1,5 @@
 <template>
-    <div id="example">
+    <div id="ebook">
         <my-banner :message="Ebook.kind"></my-banner>
         <my-card></my-card>
     </div>
@@ -9,7 +9,7 @@ import myBanner from './children/banner'
 import myCard from './children/card'
 import { mapState } from 'vuex'
 export default {
-    name: 'example',
+    name: 'ebook',
     computed:{
         ...mapState([
             'user',

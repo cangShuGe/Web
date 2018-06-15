@@ -4,6 +4,11 @@ import cache from '@/utils/cache'
 
 // 登录验证，权限验证
 router.beforeEach((to, from, next) => {
+
+
+    // next({path:'/404'})
+    // if(to.name === 'index')
+    // window.alert('登录已失效，请重新登录')
     // 是否需要登录
     next()
     // if (to.matched.some(record => record.meta.login)) {

@@ -1,9 +1,10 @@
 <template>
     <div id="home">
-        Home Page
+        asdfasdf
     </div>
 </template>
 <script>
+
 export default {
     name: 'home',
     data() {

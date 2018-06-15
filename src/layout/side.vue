@@ -2,15 +2,18 @@
     <my-sticky sticky-class="sticky-class">
         <el-aside id="side" width="240px">
             <el-menu class="el-side-container" :default-active="$route.name" :default-openeds="defaultOpeneds">
-                <my-side-item :json="filterRoutes"></my-side-item>
+                <my-side-item ></my-side-item>
+                <!-- :json="filterRoutes" -->
             </el-menu>
         </el-aside>
     </my-sticky>
 </template>
 <script>
 import { sideRoutes } from '@/router'
+import mySideItem from '@/layout/sideItem'
 export default {
     name: 'my-side',
+    components: { mySideItem },
     data() {
         return {
             filterRoutes: [], // 过滤后的路由

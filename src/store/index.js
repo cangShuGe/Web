@@ -9,7 +9,9 @@ const state = {
     logs: [], // 错误日志
     user: '', // 用户信息
     useronline:false,
-    kinds:{xuanhuan:'玄幻',xiuzhen:'修真',mingzhu:'名著'}
+    kinds:{xuanhuan:'玄幻',xiuzhen:'修真',mingzhu:'名著'},
+    Ebook:{'id':'001','kind':'woshuisf'},
+    realBook:{'id':'001','kind':'sdjfsldjf'}
 }
 
 const getters = {
@@ -36,6 +38,14 @@ const mutations = {
     },
     set_kinds(state,kind){
         state.kinds = kind
+    },
+    set_Ebook(state,ebook){
+        state.Ebook.id=ebook[0]
+        state.Ebook.kind=ebook[1]
+    },
+    set_RealBook(state,real){
+        state.realBook.id=real[0]
+        state.realBook.kind=real[1]
     }
 }
 

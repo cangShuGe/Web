@@ -5,28 +5,30 @@
             <el-carousel-item>
                 <div class="item-content">
                     <img src="~@/assets/img/echo.jpg">
-                    <a class="title" href="https://github.com/uncleLian/vue2-echo" target="_blank">echo回声</a>
+                    <div class="title" target="_blank">今日头条</div>
                 </div>
             </el-carousel-item>
             <el-carousel-item>
                 <div class="item-content">
                     <img src="~@/assets/img/health.gif">
-                    <a class="title" href="https://github.com/uncleLian/vue2-health" target="_blank">头条号</a>
+                    <div class="title" target="_blank">今日头条</div>
                 </div>
             </el-carousel-item>
             <el-carousel-item>
                 <div class="item-content">
                     <img src="~@/assets/img/toutiao.jpg">
-                    <a class="title" href="https://github.com/uncleLian/vue2-news" target="_blank">今日头条</a>
+                    <div class="title" target="_blank">今日头条</div>
                 </div>
             </el-carousel-item>
         </el-carousel>
     </div>
 </template>
 <script>
+import router from '@/router'
 export default {
     name: 'banner',
     props:['message']
+    // before
 }
 </script>
 <style lang='stylus'>

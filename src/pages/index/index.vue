@@ -33,6 +33,7 @@ export default {
         // }
         // this.$store.dispatch('set_kinds','sdfsdf')
         // this.$store.commit('set_kinds',['1','2','3'])
+        this.$store.commit('set_RealBook',['00001','玄幻'])
     }
 
 }
