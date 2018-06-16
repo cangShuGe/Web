@@ -8,7 +8,7 @@
                 <!-- <el-menu-item-group > -->
                     <div>
                         <!-- <router-link  :to="{name:path}" > -->
-                            <el-menu-item v-for="(name,id,index) in kinds" :key="index" :index="1-index" @click="choseRealBook(name,id)">
+                            <el-menu-item v-for="(name,id,index) in kinds" :key="index" index="1-index" @click="choseRealBook(name,id)">
                             {{name}}
                             </el-menu-item>
                         <!-- </router-link> -->
@@ -21,7 +21,7 @@
             <el-submenu index="3">
               <span slot="title">电子书</span>
                 <div v-for="(name,id,index) in kinds" :key="index">
-                <el-menu-item :index="120-index" @click="choseBook(id,name)">
+                <el-menu-item index="120-index" @click="choseBook(id,name)">
                     {{name}}
                 </el-menu-item>
                 </div>

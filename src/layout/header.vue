@@ -2,21 +2,38 @@
     <el-header id="header" height="80px">
         <div class="container">
             <!-- logo -->
+            <el-aside>
             <router-link class="header-logo" to="/">
                 <span>藏书阁</span>
             </router-link>
-
+            </el-aside>
+            <!-- <el-main> -->
             <div class="header-right">
                 <div class="right-item">
-                    <div class="user" v-if="true">
-                        <el-dropdown placement="top-end" @command="onUserSelected">
+                    <div class="user" v-if="useronline">
+                        <el-dropdown placement="top-end" @command="onUser">
+                            <div class="user-info">
+                                <span class="el-dropdown-link">{{user.userName}}</span>
+                            </div>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item command="personmessage">个人信息</el-dropdown-item>
+                                <el-dropdown-item command="exit">退出</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </div>
+
+                    <div class="user" :hidden="useronline">
+                        <el-dropdown placement="top-end" @command="onUserSelected" >
                             <div class="user-info">
                                 <!-- <img :src="user.headimgurl"> -->
                                 <span class="el-dropdown-link" @click="dialogFormVisible = true">登录</span>
                                 <span class="el-dropdown-link"> | </span>
                                 <span class="el-dropdown-link" @click="dialogRegisterVisible = true">注册</span>
                             </div>
-
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item command="person"></el-dropdown-item>
+                                <el-dropdown-item divided>没有账号请先注册</el-dropdown-item>
+                            </el-dropdown-menu>
                             <el-dialog class='login_box' title="登录" :visible.sync="dialogFormVisible">
                                 <el-form :model="form" @submit.native.prevent="verify">
                                     <el-form-item>
@@ -31,54 +48,47 @@
                                     </el-form-item>
                                 </el-form>
                             </el-dialog>
-
                             <el-dialog class='login_box' title="注册" :visible.sync="dialogRegisterVisible">
                                 <el-form :model="form" @submit.native.prevent="verifyRegister">
                                     <el-form-item>
-                                        <el-input v-model="register.username" placeholder="用户名" auto-complete='off'/>
+                                        <el-input v-model="registerfrom.username" placeholder="用户名" auto-complete='off'/>
                                     </el-form-item>
                                     <el-form-item>
-                                        <el-input v-model="register.email" placeholder="邮箱" auto-complete='off'/>
+                                        <el-input v-model="registerfrom.email" placeholder="邮箱" auto-complete='off'/>
                                     </el-form-item>
                                     <el-form-item>
-                                        <el-input v-model="register.password" placeholder="密码" auto-complete='off' :type="pwdType" />
+                                        <el-input v-model="registerfrom.password" placeholder="密码" auto-complete='off' :type="pwdType" />
                                             <span class="pwdEye" @click="passwordToggle">
                                                 <i :class="eyeType"></i>
                                             </span>
                                     </el-form-item>
                                     <el-form-item>
-                                        <el-input v-model="register.ensurePassword" placeholder="确认密码" auto-complete='off' :type="pwdEnsureType" />
+                                        <el-input v-model="registerfrom.ensurePassword" placeholder="确认密码" auto-complete='off' :type="pwdEnsureType" />
                                             <span class="pwdEnsureEye" @click="passwordEnsureToggle">
                                                 <i :class="eyeEnsureType"></i>
                                             </span>
                                     </el-form-item>
-                                    <el-input class="login_btn login_inputColor" type="button" value="登录" />
+                                    <el-input class="login_btn login_inputColor" type="submit" value="注册" />
                                 </el-form>
                             </el-dialog>
-
-                            <!-- 显示页面选项 -->
-                            <el-dropdown-menu slot="dropdown" v-if="useronline">
-                                <el-dropdown-item :disabled="true">v1.0.1</el-dropdown-item>
-                                <el-dropdown-item divided command="exit">退出登录</el-dropdown-item>
-                            </el-dropdown-menu>
                         </el-dropdown>
                     </div>
                 </div>
             </div>
+            
+        <!-- </el-main> -->
         </div>
-        <!-- breadcrumb -->
-        <!-- <el-breadcrumb class="header-breadcrumb" separator-class="el-icon-arrow-right">
-            <el-breadcrumb-item v-for="(item,index) in breadcrumb" :key="index" :to="item.path">{{item.meta.title || item.name}}</el-breadcrumb-item>
-        </el-breadcrumb> -->
-        
     </el-header>
 </template>
 <script>
 import { mapState } from 'vuex'
+import Connect from '@/services/service'
+import { postRequest,putRequest,getRequest } from '@/utils/api'
 export default {
     name: 'my-header',
     data() {
         return {
+            // Online:useronline,
             breadcrumb: '',
             pwdType: 'password',
             eyeType: 'el-icon-my-closeEye',
@@ -90,7 +100,7 @@ export default {
                 username: 'uncleLian',
                 password: '123456'
             },
-            register:{
+            registerfrom:{
                 username: '',
                 email:'',
                 password: '',
@@ -102,7 +112,8 @@ export default {
         ...mapState([
             'user',
             'logs',
-            'useronline'
+            'useronline',
+            'user'
         ])
     },
     watch: {
@@ -135,21 +146,85 @@ export default {
                 this.eyeEnsureType = 'el-icon-my-closeEye'
             }
         },
-        login(form){
-
+        login(){
+            let connect = new Connect()
+            postRequest(connect.loginRequest(), {
+                username:this.form.userName,
+                password:this.form.password
+            }).then(resp=> {
+                response = resp
+            }, resp=> {
+                var response = {
+                    status:false,
+                    message:"网络连接中断"
+                }
+                // console.log(resp.message)
+                console.log(response.message)
+            })
         },
         verify(){
             // 登录信息验证
+            if(!this.form.username || !this.form.password){
+                this.$message.error('请输入账号和密码')
+            }else if(this.form.username.length < 4 || this.form.username.length > 20){
+                this.$message.error('请确保账号长度在4-20位之内')
+            }else if(this.form.password.length < 6 || this.form.password.length > 20){
+                this.$message.error('请确保密码长度在6-20位之内')
+            }else{
+                this.login()
+            }
 
+        },
+        register(){
+            let connect = new Connect()
+            postRequest(connect.registerReauest(), {
+                username:this.registerfrom.userName,
+                password:this.registerfrom.password,
+                email:this.registerfrom.email
+            }).then(resp=> {
+                response = resp
+            }, resp=> {
+                var response = {
+                    status:false,
+                    message:"网络连接中断"
+                }
+                // console.log(resp.message)
+                console.log(response.message)
+            })
         },
         verifyRegister(){
             //注册信息验证
-
+            if(!this.registerfrom.username || !this.registerfrom.password
+             || !this.registerfrom.email || !this.registerfrom.ensurePassword){
+                this.$message.error('请输入用户名、邮箱和密码')
+            }else if(this.registerfrom.username.length < 4 || this.registerfrom.username.length > 20){
+                this.$message.error('请确保账号长度在4-20位之内')
+            }else if(this.registerfrom.password.length < 6 || this.registerfrom.password.length > 20){
+                this.$message.error('请确保密码长度在6-20位之内')
+            }else if(this.registerfrom.email.indexOf('@') == -1){
+                this.$message.error('请输入正确的邮箱账号')
+            }else if(!(this.registerfrom.ensurePassword == this.registerfrom.password)){
+                this.$message.error('请确认两次输入密码相同')
+            }else{
+                this.register()
+            }
         },
         onUserSelected(val) {
-            if (val === 'exit') {
-                this.$store.commit('loginOut')
-                this.$router.push('/login')
+            if (val === 'person') {
+                //点击个人信息时的响应
+                
+            }
+        },
+        onUser(val){
+            if(val === 'personmessage'){
+                this.$router.push({name:'person'})
+
+            }else if(val === 'exit'){
+                
+                this.$store.commit('set_user_online',false)
+                // Online = false
+                this.$store.commit('set_user','')
+                // this.$router.go(0)
             }
         },
         getBreadcrumb() {

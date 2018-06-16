@@ -4,6 +4,7 @@ import App from './App'
 import router from './router'
 import store from './store'
 import vueNumTo from 'vue-num-to'
+import VueResource from 'vue-resource'
 
 // css
 import '@/assets/css/reset.css'
@@ -45,6 +46,7 @@ Vue.use(VueProgressBar, {
     thickness: '2px'
 })
 Vue.use(vueNumTo)
+Vue.use(VueResource)
 /* eslint-disable no-new */
 new Vue({
     el: '#app',

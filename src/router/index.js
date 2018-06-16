@@ -16,6 +16,8 @@ const page404 = () => import('@/pages/other/page404')
 const realbook = () => import('@/pages/index/children/manyMenu/realbook')
 const ebook = () => import('@/pages/index/children/manyMenu/ebook')
 
+const Person = () => import('@/pages/person/person')
+
 Vue.use(Router)
 
 /* sideRoutes config
@@ -106,6 +108,11 @@ export default new Router({
             component: index,
             redirect: '/index/home',
             children: sideRoutes
+        },
+        {
+            name:'person',
+            path:'/index/personcenter',
+            component:Person
         },
         {
             name: 'login',

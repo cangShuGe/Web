@@ -7,8 +7,10 @@ Vue.use(Vuex)
 
 const state = {
     logs: [], // 错误日志
-    user: '', // 用户信息
-    useronline:false,
+    user: {
+        'userName':'吴庆港'
+    }, // 用户信息
+    useronline:true,
     kinds:{xuanhuan:'玄幻',xiuzhen:'修真',mingzhu:'名著'},
     Ebook:{'id':'001','kind':'woshuisf'},
     realBook:{'id':'001','kind':'sdjfsldjf'}
@@ -46,6 +48,10 @@ const mutations = {
     set_RealBook(state,real){
         state.realBook.id=real[0]
         state.realBook.kind=real[1]
+    },
+    set_user_online(state,value){
+        console.log(value)
+        state.useronline=value
     }
 }
 

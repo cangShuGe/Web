@@ -1,9 +1,10 @@
 
 import { postRequest,putRequest,getRequest } from '@/utils/api'
+import {} from '@/store/index'
 
 export default class Connect{
     constructor(){
-
+      this.response,
       this.host = "192.168.1.1:8080",
       this.ip = {
          login:'/login',
@@ -11,36 +12,12 @@ export default class Connect{
       }
     }
 
-
-    loginRequest(form){
-      postRequest(this.host + this.ip.login, {
-        username:form.userName,
-        password:form.password
-      }).then(resp=> {
-        return resp
-      }, resp=> {
-        var res = {
-          status:false,
-          message:"网络连接中断"
-        }
-        return res
-      })
+    loginRequest(){
+      return this.host+this.ip.login
     }
 
-    registerReauest(form){
-      postRequest(this.host + this.ip.register, {
-        username:form.userName,
-        password:form.password,
-        email:form.email
-      }).then(resp=> {
-        return resp
-      }, resp=> {
-        var res = {
-          status:false,
-          message:"网络连接中断"
-        }
-        return res
-      })
+    registerReauest(){
+      return this.host + this.ip.register
     }
     getKindsRequest(){
        getRequest(this.host + this.ip).then(resp=>{

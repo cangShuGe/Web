@@ -5,7 +5,7 @@ import cache from '@/utils/cache'
 
 // 创建axios实例
 export const instance = axios.create({
-    baseURL: 'www.baidu.com', // 根据配置环境的改变的baseURL（/config目录下进行修改）；不需要则直接注释或者改为自定义URL
+    baseURL: '198.168.1.1:8080', // 根据配置环境的改变的baseURL（/config目录下进行修改）；不需要则直接注释或者改为自定义URL
     timeout: 10 * 1000 // 请求超时时间
 })
 
