@@ -1,9 +1,16 @@
+
 import axios from 'axios'
 
 let base = '';
 // base = process.env.api.host;
+// var instance = axios.create({
+//   baseURL:"https://www.baidu.com/",
+//   timeout:1000,
+//   headers: {'X-Custom-Header':'foobar'}
+// });
 export const postRequest = (url, params) => {
   return axios({
+    baseURL:"https://www.baidu.com/",
     method: 'post',
     url: `${base}${url}`,
     data: params,
@@ -54,8 +61,10 @@ export const deleteRequest = (url) => {
   });
 }
 export const getRequest = (url,params) => {
+  // return axios#get(url);
   return axios({
     method: 'get',
+    changeOrigin:true,//允许跨域
     data:params,
     transformRequest: [function (data) {
       let ret = ''
@@ -65,7 +74,11 @@ export const getRequest = (url,params) => {
       return ret
     }],
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/x-www-form-urlencoded',
+      // 'Access-Control-Allow-Headers':'Content-Type,Content-Length, Authorization,\'Origin\',Accept,X-Requested-With',
+      // 'Access-Control-Allow-Credentials':true,
+      // 'Access-Control-Allow-Methods':'GET, POST, OPTIONS, PUT, PATCH, DELETE',
+      'Access-Control-Allow-Origin':'*'
     },
     url: `${base}${url}`
   });

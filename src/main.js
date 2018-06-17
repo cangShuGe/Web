@@ -47,6 +47,8 @@ Vue.use(VueProgressBar, {
 })
 Vue.use(vueNumTo)
 Vue.use(VueResource)
+// axios.defaults.baseURL = 'www.baidu.com'
+// Vue.prototype.$ajax  = axios
 /* eslint-disable no-new */
 new Vue({
     el: '#app',

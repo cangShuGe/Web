@@ -112,7 +112,10 @@ export default new Router({
         {
             name:'person',
             path:'/index/personcenter',
-            component:Person
+            component:Person,
+            meta:{
+              login:true
+            }
         },
         {
             name: 'login',

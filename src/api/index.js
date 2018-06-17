@@ -8,7 +8,7 @@ import { request } from '@/utils/request'
 
 // 登录
 export function getLogin(form) {
-    let res = request('/userLogin', 'POST', form)
+    let res = request('', 'POST', form)
     return res
 }
 

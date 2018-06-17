@@ -1,46 +1,72 @@
 import router from '@/router'
 import store from '@/store'
-import cache from '@/utils/cache'
+import cookie from '@/cookie/cookie'
 
 // 登录验证，权限验证
 router.beforeEach((to, from, next) => {
-
-
-    // next({path:'/404'})
-    // if(to.name === 'index')
-    // window.alert('登录已失效，请重新登录')
+    console.log('123455677')
+    let temp = cookie.gettoken('useronline')
+    console.log((undefined!==typeof(temp)))
+    if(typeof(temp) !== undefined){
+      store.commit('set_user_online',temp)
+      let user = cookie.gettoken('user')
+        if(user){
+          store.commit('set_user',user)
+        }
+    }else{
+      store.commit('set_user_online',false)
+      store.commit('set_user','')
+    }
     // 是否需要登录
-    next()
-    // if (to.matched.some(record => record.meta.login)) {
-    //     if (cache.getToken()) {
-    //         if (to.path === '/login') {
-    //             next('/')
-    //         } else {
-    //             // 是否已有用户信息
-    //             if (store.state.user) {
-    //                 assessPermission(store.state.user.role, to.meta.role, next)
-    //             } else {
-    //                 store.dispatch('get_user_data').then(res => {
-    //                     assessPermission(res.role, to.meta.role, next)
-    //                 })
-    //                 .catch(err => {
-    //                     console.log(err)
-    //                     // 可根据错误信息，做相应需求，这里默认token值失效
-    //                     window.alert('登录已失效，请重新登录')
-    //                     next({ path: '/login', query: { redirect: to.fullPath } })
-    //                 })
-    //             }
-    //         }
-    //     } else {
-    //         next({ path: '/login', query: { redirect: to.fullPath } })
-    //     }
-    // } else {
-    //     if (to.path === '/login' && cache.getToken()) {
-    //         next('/')
-    //     } else {
-    //         next()
-    //     }
-    // }
+    if (to.matched.some(record => record.meta.login)) {
+      console.log('asdfasdsf')
+      if(cookie.gettoken('useronline')){
+        store.commit('set_user_online',true)
+        let user = cookie.gettoken('user')
+        if(user){
+          store.commit('set_user',user)
+        }
+        next()
+      }else{
+        store.commit('set_user_online',false)
+        store.commit('set_user','')
+        next('/index')
+      }
+        // if (cache.getToken()) {
+        //     if (to.next === 'index') {
+        //         next('/')
+        //     } else {
+        //       if(store.state.useronline === true){
+        //         next()
+        //       }else{
+        //         next({path:"/index"})
+        //       }
+        //         是否已有用户信息
+        //         if (store.state.user) {
+        //             assessPermission(store.state.user.role, to.meta.role, next)
+        //         } else {
+        //             store.dispatch('get_user_data').then(res => {
+        //                 assessPermission(res.role, to.meta.role, next)
+        //             })
+        //             .catch(err => {
+        //                 console.log(err)
+        //                 // 可根据错误信息，做相应需求，这里默认token值失效
+        //                 window.alert('登录已失效，请重新登录')
+        //                 next({ path: '/login', query: { redirect: to.fullPath } })
+        //             })
+        //         }
+        //     }
+        // } else {
+        //     // next({ path: '/login', query: { redirect: to.fullPath } })
+        // }
+    } else {
+        // if (to.path === '/login' && cache.getToken()) {
+        //     next('/')
+        // } else {
+        //     next()
+        // }
+        next()
+    }
 })
 
 // 验证权限

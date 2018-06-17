@@ -9,8 +9,13 @@
             </el-aside>
             <!-- <el-main> -->
             <div class="header-right">
+              <div class="right-item">
+                <el-input placement="top-end" max="20" size="mini" :clearable="true" placeholder="请输入内容" v-model="input5">
+                  <el-button @click="search" slot="append" icon="el-icon-search"></el-button>
+                </el-input>
+              </div>
                 <div class="right-item">
-                    <div class="user" v-if="useronline">
+                    <div class="user" :hidden="!useronline">
                         <el-dropdown placement="top-end" @command="onUser">
                             <div class="user-info">
                                 <span class="el-dropdown-link">{{user.userName}}</span>
@@ -21,7 +26,6 @@
                             </el-dropdown-menu>
                         </el-dropdown>
                     </div>
-
                     <div class="user" :hidden="useronline">
                         <el-dropdown placement="top-end" @command="onUserSelected" >
                             <div class="user-info">
@@ -75,8 +79,9 @@
                     </div>
                 </div>
             </div>
-            
-        <!-- </el-main> -->
+          <!-- <el-input max="20" size="mini" clearable="true" placeholder="请输入内容" v-model="input5"  class="header-breadcrumb">
+            <el-button slot="append" icon="el-icon-search"></el-button>
+          </el-input> -->
         </div>
     </el-header>
 </template>
@@ -84,10 +89,12 @@
 import { mapState } from 'vuex'
 import Connect from '@/services/service'
 import { postRequest,putRequest,getRequest } from '@/utils/api'
+import cookie from '@/cookie/cookie'
 export default {
     name: 'my-header',
     data() {
         return {
+            input5:'',
             // Online:useronline,
             breadcrumb: '',
             pwdType: 'password',
@@ -128,6 +135,13 @@ export default {
         this.getBreadcrumb()
     },
     methods: {
+        setfalse(){
+          this.dialogRegisterVisible = false
+          this.dialogFormVisible = false
+        },
+        search(){
+
+        },
         passwordToggle() {
             if (this.pwdType === 'password') {
                 this.pwdType = ''
@@ -147,20 +161,9 @@ export default {
             }
         },
         login(){
+            this.setfalse()
             let connect = new Connect()
-            postRequest(connect.loginRequest(), {
-                username:this.form.userName,
-                password:this.form.password
-            }).then(resp=> {
-                response = resp
-            }, resp=> {
-                var response = {
-                    status:false,
-                    message:"网络连接中断"
-                }
-                // console.log(resp.message)
-                console.log(response.message)
-            })
+            connect.loginRequest(this.form)
         },
         verify(){
             // 登录信息验证
@@ -176,21 +179,9 @@ export default {
 
         },
         register(){
+            this.setfalse()
             let connect = new Connect()
-            postRequest(connect.registerReauest(), {
-                username:this.registerfrom.userName,
-                password:this.registerfrom.password,
-                email:this.registerfrom.email
-            }).then(resp=> {
-                response = resp
-            }, resp=> {
-                var response = {
-                    status:false,
-                    message:"网络连接中断"
-                }
-                // console.log(resp.message)
-                console.log(response.message)
-            })
+
         },
         verifyRegister(){
             //注册信息验证
@@ -212,19 +203,19 @@ export default {
         onUserSelected(val) {
             if (val === 'person') {
                 //点击个人信息时的响应
-                
+
             }
         },
         onUser(val){
             if(val === 'personmessage'){
                 this.$router.push({name:'person'})
-
             }else if(val === 'exit'){
-                
+                // this.$router.go(0)
                 this.$store.commit('set_user_online',false)
                 // Online = false
                 this.$store.commit('set_user','')
                 // this.$router.go(0)
+                cookie.removeall()
             }
         },
         getBreadcrumb() {
@@ -239,6 +230,19 @@ export default {
     width: 100%;
     background-color: $blackColor;
     padding: 0 50px 0 40px;
+    .header-breadcrumb{
+        width:200px;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 0 20px;
+        .el-breadcrumb__inner{
+            color: #fff;
+        }
+        .el-breadcrumb__separator{
+            color: #fff;
+        }
+    }
     .container {
         position: relative;
         width: 100%;
