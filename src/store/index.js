@@ -17,9 +17,14 @@ const state = {
         'credit':223
     }, // 用户信息
     useronline:true,
-    kinds:{xuanhuan:'玄幻',xiuzhen:'修真',mingzhu:'名著'},
+    kinds:{xuanhuan:'玄幻',xiuzhen:'修真',mingzhu:'古典名著'},
     Ebook:{'id':'001','kind':'woshuisf'},
-    realBook:{'id':'001','kind':'sdjfsldjf'}
+    realBook:{'id':'001','kind':'sdjfsldjf'},
+
+    url1:'static/img/hongloumeng.jpg',
+    url2:'static/img/piao.jpg',
+    url3:'static/img/shuihuzhuan.jpg',
+    url4:'static/img/huozhe.jpg' //存储主页图片路径 使用require获取图片真实地址
 }
 
 const getters = {

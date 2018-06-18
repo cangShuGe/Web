@@ -15,6 +15,8 @@ const page401 = () => import('@/pages/other/page401')
 const page404 = () => import('@/pages/other/page404')
 const realbook = () => import('@/pages/index/children/manyMenu/realbook')
 const ebook = () => import('@/pages/index/children/manyMenu/ebook')
+//  book
+const book = () => import('@/pages/book/book')
 
 const Person = () => import('@/pages/person/person')
 
@@ -130,6 +132,11 @@ export default new Router({
         {
             path: '*',
             redirect: '/404'
+        },
+        {
+            name : 'book',
+            path : '/index/book',
+            component:book,
         }
     ],
     scrollBehavior(to, from, savedPosition) {

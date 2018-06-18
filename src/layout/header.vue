@@ -374,7 +374,7 @@ export default {
                     border: none;
                     outline: none;
                     cursor: pointer;
-                    color: white-space nowrap;
+                    color: #00CC00;
                 }
             }
         }

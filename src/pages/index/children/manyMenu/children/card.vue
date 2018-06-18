@@ -1,14 +1,11 @@
 <template>
     <div id="card">
-        <el-row  :gutter="32" class="count">
-            <el-col class="count-item" :xs="24" :sm="12" :lg="6" v-for="(item,index) in list" :key="index" >
-                <div class="item-container" :class="`item-container-${index + 1}`">
-                    <div class="icon">
-                        <i :class="item.icon" ></i>
-                    </div>
-                    <div class="text">
-                        <div class="title">{{item.title}}</div>
-                        <vue-num-to class="number" :startVal="0" :endVal="item.endVal" :duration="5000"></vue-num-to>
+        <el-row  :gutter="20">
+            <el-col :span="3" :offset="2" v-for="(item,index) in list" :key="index" >
+                <div class="grid-content bg-purple">
+                    <img :src="item.icon" alt="书籍封面">
+                    <div style="padding: 14px; text-align: center">
+                        <span>{{item.title}}</span>
                     </div>
                 </div>
             </el-col>
@@ -22,30 +19,36 @@ export default {
         return {
             list: [
                 {
-                    icon: 'el-icon-my-paperplane',
-                    title: 'Page View',
-                    endVal: 182735
+                    icon: this.$store.state.url1,
+                    title: '红楼梦'
                 },
                 {
-                    icon: 'el-icon-my-users',
-                    title: 'Unique Visitor',
-                    endVal: 7428
+                    icon: this.$store.state.url2,
+                    title: '漂',
                 },
                 {
-                    icon: 'el-icon-my-news',
-                    title: 'Message',
-                    endVal: 2839
+                    icon: this.$store.state.url3,
+                    title: '水浒传',
                 },
                 {
-                    icon: 'el-icon-my-qq',
-                    title: 'QQ group',
-                    endVal: 338241465
+                    icon: this.$store.state.url4,
+                    title: '活着',
                 }
             ]
         }
     }
 }
 </script>
+<style>
+  .grid-content {
+    width:250px;
+    height: 150px;
+  }
+  .grid-content img{
+    width:250px;
+    height: 150px;
+  }
+</style>
 <style lang='stylus'>
 color1 = #55c8ca
 color2 = #f7b87f
