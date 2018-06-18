@@ -8,31 +8,38 @@ import VueResource from 'vue-resource'
 export default class Connect{
     constructor(){
       this.response,
-      this.host = "http://198.168.1.1:8080",
+      this.host = "http://10.236.95.106:8888",
       this.ip = {
-         login:'/login',
+         login:'/userLogin',
          register:'register',
-         changeMessage:'改变个人信息',
-         changePwd:'更改密码'
+         changeMessage:'/updateUser',
+         changePwd:'更改密码',
+         deleteSaleCar:'删除购物车商品',
+         buySaleCar:'购买购物车商品',
+         buyVip:'购买会员',
+         userRemark:'用户评分',
+         personMessage:'/selectUser'
       }
     }
 
     loginRequest(form){
-      putRequest(this.host + this.ip.login, {
-          username:this.registerfrom.userName,
-          password:this.registerfrom.password
+      postRequest(this.host + this.ip.login, {
+        account:form.username,
+        pwd:form.password
       }).then(resp=> {
         console.log(resp)
-        response = resp
-        if(resp.status){
+        if(resp.data.status){
           cookie.setToken('useronline',true)
-          store.commit('set_user_online',false)
+          store.commit('set_user_online',true)
           window.alert('登陆成功')
+          this.findPersonMessage(form.username)
         }else{
           cookie.setToken('useronline',false)
         }
-        router.go(0)
+        // router.go(0)
       }, resp=> {
+        if(resp == null || resp)
+        console.log(resp)
         var response = {
             status:false,
             message:"网络连接中断"
@@ -40,7 +47,7 @@ export default class Connect{
         cookie.setToken('useronline',true)
         console.log(response.message)
         window.alert(response.message)
-        router.go(0)
+        // router.go(0)
       })
     }
     registerReauest(form){
@@ -60,7 +67,7 @@ export default class Connect{
       })
     }
     getKindsRequest(){
-       getRequest(this.host + this.ip,{
+      postRequest(this.host + this.ip,{
 
        }).then(resp=>{
           return resp
@@ -74,7 +81,7 @@ export default class Connect{
     }
 
     setPersonMessage(form){
-      putRequest(this.host + this.ip.changeMessage, {
+      postRequest(this.host + this.ip.changeMessage, {
 
       }).then(resp=>{
         if(resp.status){
@@ -88,7 +95,7 @@ export default class Connect{
     }
 
     setChangePwd(form){
-      putRequest(this.host + this.ip.changePwd,{
+      postRequest(this.host + this.ip.changePwd,{
         oldPwd:form.oldPwd,
         newPwd:form.newPwd
       }).then(resp=>{
@@ -99,6 +106,85 @@ export default class Connect{
         }
       },resp=>{
         window.alert('网络连接中断')
+      })
+    }
+
+    deleteSaleCar(){
+      postRequest(this.host + this.ip.deleteSaleCar,{
+
+      }).then(resp=>{
+        if(resp.status){
+          window.alert('删除商品成功')
+        }else {
+          window.alert('删除商品失败')
+        }
+      },resp=>{
+        window.alert('网络连接中断')
+      })
+    }
+
+    buySaleCar(){
+      postRequest(this.host + this.ip.buySaleCar, {
+
+      }).then(resp=>{
+        if(resp.status){
+          window.alert('购买商品成功')
+        }else {
+          window.alert('购买商品失败')
+        }
+      },resp=>{
+        window.alert('网络连接中断')
+      })
+    }
+
+    buyVip(){
+      postRequest(this.host + this.ip.buyVip, {
+
+      }).then(resp=>{
+        if(resp.status){
+          window.alert('购买会员成功')
+        }else {
+          window.alert('购买会员失败')
+        }
+      },resp=>{
+        window.alert('网络连接中断')
+      })
+    }
+
+    remark(){
+      postRequest(this.host + this.ip.userRemark, {
+
+      }).then(resp=>{
+        if(resp.status){
+          window.alert('评分成功')
+        }else {
+          window.alert('评分失败')
+        }
+      },resp=>{
+        window.alert('网络连接中断')
+      })
+    }
+
+    findPersonMessage(userName){
+      postRequest(this.host + this.ip.personMessage,{
+        account:userName
+      }).then(resp=>{
+        let message = resp.data.data
+        let usermessage ={
+          userName:message.account,
+          email:message.mailbox,
+          member:message.member,
+          credit:message.credit,
+          name:message.name,
+          sex:message.sex,
+          birthday:new Date(message.birthday)
+        }
+        console.log(message)
+        console.log(usermessage)
+        cookie.setToken('user',usermessage)
+        router.go(0)
+      },resp=>{
+
       })
     }
 

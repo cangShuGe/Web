@@ -193,6 +193,12 @@
               @selection-change="handleSelectionChange"
               :data="saleCar"
               style="width: 100%">
+              <el-table-column
+                width="322"
+                fixed
+                label="书籍名称"
+                prop="bookname">
+              </el-table-column>
               <el-table-column type="expand">
                 <template slot-scope="props">
                   <el-form label-position="left" inline class="demo-table-expand">
@@ -219,12 +225,6 @@
                     </el-form-item>
                   </el-form>
                 </template>
-              </el-table-column>
-              <el-table-column
-                width="322"
-                fixed
-                label="书籍名称"
-                prop="bookname">
               </el-table-column>
               <el-table-column
                 label="书籍作者"
@@ -307,14 +307,46 @@
             </el-row>
             <el-row>
               <el-col :span="4"><div class="grid-content"></div></el-col>
-              <el-col :span="12">
+              <el-col :span="16">
                 <div class="grid-content">
-
+                  <el-table placement="center"
+                border
+                height="400"
+                :data="EbookMessage"
+                style="width: 100%">
+                    <el-table-column
+                        fixed
+                        prop="EbookName"
+                        label="书籍名称"
+                        width="300">
+                    </el-table-column>
+                    <el-table-column
+                      label="来源"
+                      width="180"
+                      prop="EbookComefrom">
+                    </el-table-column>
+                    <el-table-column
+                        width="80"
+                        prop="Cost"
+                        label="花费积分">
+                    </el-table-column>
+                    <el-table-column
+                        width="210"
+                        prop="EbookResume"
+                        label="简介">
+                    </el-table-column>
+                    <el-table-column
+                    width="100"
+                        label="">
+                        <template slot-scope="scope">
+                          <el-button circle icon="el-icon-download" @click="downloadEbook(scope.$index,scope.row)">下载</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
                 </div>
               </el-col>
             </el-row>
             <br>
-
         </el-main>
 
         <el-dialog title="更改密码" :visible.sync="changePwdDialog">
@@ -344,6 +376,9 @@ export default {
     components: { myHeader },
     data() {
         return {
+          EbookMessage:[
+            {EbookId:'123456789',EbookName:'asdfasdf',EbookComefrom:'sdsdfsdf',Cost:23,EbookResume:'asdsdfsdsfsdfgsdfgsdfgsdfgsdfgsdfgfasdfas'},
+          ],
           booksum:0,
           moneySum:0,
           formChangePwd:{
@@ -394,6 +429,8 @@ export default {
       this.formInline.userId = this.user.userId
       this.formInline.birthday = new Date(this.user.birthday)
       this.formInline.sex = this.user.sex
+      // console.log(this.user)
+      // console.log(this.user.email)
       this.formInline.email = this.user.email
       this.formInline.member = this.user.member
       this.formInline.credit = this.user.credit
@@ -406,6 +443,9 @@ export default {
       }
     },
     methods:{
+      downloadEbook(index,row){
+
+      },
       sumMoney(){
         if(this.choiceChose.length == 0){
           this.booksum = 0
@@ -421,9 +461,9 @@ export default {
       },
       buyAll(){
         this.$confirm('确定要购买所选商品吗？').then(_=>{
-
+          //购买商品
         }).catch(_=>{
-
+          //取消购买商品不进行任何操作
         })
       },
       handleSelectionChange(val){
@@ -435,8 +475,9 @@ export default {
       deleteRow() {
         this.$confirm('确定要删除所选商品吗？').then(_=>{
           let connect = new Connect()
+          //删除所选商品
         }).catch(_=>{
-
+          //取消操作，不进行任何操作
         })
 
       },
@@ -445,7 +486,7 @@ export default {
           let connect = new Connect()
           //购买会员
         }).catch(_=>{
-
+          //不购买会员，不进任何操作
         })
 
       },
@@ -465,6 +506,7 @@ export default {
       },
       changeMessage(){
         let connect = new Connect()
+        //更改个人信息
         connect.setPersonMessage(this.formInline)
       },
       verifyChangeMessage(){
@@ -487,7 +529,7 @@ export default {
       remark(index,row){
         this.$confirm('您只能打一次分数，确定要提交吗').then(_=>{
           row.remark = this.value[index]
-
+          //评分
         }).catch(_=>{
 
         })

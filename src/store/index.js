@@ -8,13 +8,13 @@ Vue.use(Vuex)
 const state = {
     logs: [], // 错误日志
     user: {
-        userName:'吴庆港',
-        userId:'',
-        email:'2916144319@qq.com',
-        sex:'男',
-        birthday:new Date('Mon Jun 04 2018'),
-        member:0,
-        credit:223
+        'userName':'吴庆港',
+        'userId':'',
+        'email':'2916144319@qq.com',
+        'sex':'男',
+        'birthday':new Date('Mon Jun 04 2018'),
+        'member':0,
+        'credit':223
     }, // 用户信息
     useronline:true,
     kinds:{xuanhuan:'玄幻',xiuzhen:'修真',mingzhu:'名著'},
@@ -39,6 +39,8 @@ const mutations = {
         cache.removeToken()
     },
     set_user(state, val) {
+      // console.log(state.user)
+      // console.log(state.user.userName)
         state.user = val
     },
     set_role(state, role) {
@@ -56,7 +58,7 @@ const mutations = {
         state.realBook.kind=real[1]
     },
     set_user_online(state,value){
-        console.log(value)
+        // console.log(value)
         state.useronline=value
     }
 }

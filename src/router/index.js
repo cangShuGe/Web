@@ -118,11 +118,6 @@ export default new Router({
             }
         },
         {
-            name: 'login',
-            path: '/login',
-            component: login
-        },
-        {
             name: '401',
             path: '/401',
             component: page401

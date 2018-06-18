@@ -4,14 +4,13 @@ import cookie from '@/cookie/cookie'
 
 // 登录验证，权限验证
 router.beforeEach((to, from, next) => {
-    console.log('123455677')
     let temp = cookie.gettoken('useronline')
-    console.log((undefined!==typeof(temp)))
     if(typeof(temp) !== undefined){
       store.commit('set_user_online',temp)
       let user = cookie.gettoken('user')
-        if(user){
-          store.commit('set_user',user)
+      if(user){
+        user = JSON.parse(user)
+        store.commit('set_user',user)
         }
     }else{
       store.commit('set_user_online',false)
@@ -22,10 +21,6 @@ router.beforeEach((to, from, next) => {
       console.log('asdfasdsf')
       if(cookie.gettoken('useronline')){
         store.commit('set_user_online',true)
-        let user = cookie.gettoken('user')
-        if(user){
-          store.commit('set_user',user)
-        }
         next()
       }else{
         store.commit('set_user_online',false)

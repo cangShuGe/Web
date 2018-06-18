@@ -10,7 +10,6 @@ let base = '';
 // });
 export const postRequest = (url, params) => {
   return axios({
-    baseURL:"https://www.baidu.com/",
     method: 'post',
     url: `${base}${url}`,
     data: params,

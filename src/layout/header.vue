@@ -123,6 +123,9 @@ export default {
             'user'
         ])
     },
+    created:function(){
+      // console.log(this.user.userName)
+    },
     watch: {
         $route() {
             this.getBreadcrumb()
@@ -161,9 +164,20 @@ export default {
             }
         },
         login(){
+          let param = {
+            account:this.form.username,
+            pwd:this.form.password
+          }
             this.setfalse()
+            // this.$http.get("http://10.236.95.106:8888/userLogin",{params:param}).then(res =>{
+            //   console.log(res)
+            // },res=>{
+            //   console.log(res)
+            // })
             let connect = new Connect()
             connect.loginRequest(this.form)
+            // console.log(this.form)
+            // console
         },
         verify(){
             // 登录信息验证
@@ -213,6 +227,7 @@ export default {
                 this.$store.commit('set_user_online',false)
                 this.$store.commit('set_user','')
                 cookie.removeall()
+                this.$router.go(0)
             }
         },
         getBreadcrumb() {
