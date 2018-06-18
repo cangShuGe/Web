@@ -67,7 +67,7 @@ export default class Connect{
       })
     }
     getKindsRequest(){
-      postRequest(this.host + this.ip,{
+      postRequest(this.host,{
 
        }).then(resp=>{
           return resp

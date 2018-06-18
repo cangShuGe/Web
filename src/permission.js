@@ -27,33 +27,7 @@ router.beforeEach((to, from, next) => {
         store.commit('set_user','')
         next('/index')
       }
-        // if (cache.getToken()) {
-        //     if (to.next === 'index') {
-        //         next('/')
-        //     } else {
-        //       if(store.state.useronline === true){
-        //         next()
-        //       }else{
-        //         next({path:"/index"})
-        //       }
-        //         是否已有用户信息
-        //         if (store.state.user) {
-        //             assessPermission(store.state.user.role, to.meta.role, next)
-        //         } else {
-        //             store.dispatch('get_user_data').then(res => {
-        //                 assessPermission(res.role, to.meta.role, next)
-        //             })
-        //             .catch(err => {
-        //                 console.log(err)
-        //                 // 可根据错误信息，做相应需求，这里默认token值失效
-        //                 window.alert('登录已失效，请重新登录')
-        //                 next({ path: '/login', query: { redirect: to.fullPath } })
-        //             })
-        //         }
-        //     }
-        // } else {
-        //     // next({ path: '/login', query: { redirect: to.fullPath } })
-        // }
+        
     } else {
         // if (to.path === '/login' && cache.getToken()) {
         //     next('/')
