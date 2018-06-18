@@ -210,11 +210,8 @@ export default {
             if(val === 'personmessage'){
                 this.$router.push({name:'person'})
             }else if(val === 'exit'){
-                // this.$router.go(0)
                 this.$store.commit('set_user_online',false)
-                // Online = false
                 this.$store.commit('set_user','')
-                // this.$router.go(0)
                 cookie.removeall()
             }
         },

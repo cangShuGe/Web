@@ -8,7 +8,13 @@ Vue.use(Vuex)
 const state = {
     logs: [], // 错误日志
     user: {
-        'userName':'吴庆港'
+        userName:'吴庆港',
+        userId:'',
+        email:'2916144319@qq.com',
+        sex:'男',
+        birthday:new Date('Mon Jun 04 2018'),
+        member:0,
+        credit:223
     }, // 用户信息
     useronline:true,
     kinds:{xuanhuan:'玄幻',xiuzhen:'修真',mingzhu:'名著'},

@@ -8,22 +8,21 @@ import VueResource from 'vue-resource'
 export default class Connect{
     constructor(){
       this.response,
-      this.host = "https://www.baidu.com",
+      this.host = "http://198.168.1.1:8080",
       this.ip = {
          login:'/login',
-         register:'register'
+         register:'register',
+         changeMessage:'改变个人信息',
+         changePwd:'更改密码'
       }
     }
 
     loginRequest(form){
-      // VueResource.http.get('www.baidu.com','').then((res) => {
-      //   console.log('get' + res)
-      // }).catch((resp) => {
-      //   console.log('get' + 'message error!')
-      // })
-
-      getRequest(this.host, '').then(resp=> {
-       console.log(resp)
+      putRequest(this.host + this.ip.login, {
+          username:this.registerfrom.userName,
+          password:this.registerfrom.password
+      }).then(resp=> {
+        console.log(resp)
         response = resp
         if(resp.status){
           cookie.setToken('useronline',true)
@@ -32,49 +31,19 @@ export default class Connect{
         }else{
           cookie.setToken('useronline',false)
         }
-        // router.go(0)
+        router.go(0)
       }, resp=> {
         var response = {
             status:false,
             message:"网络连接中断"
         }
         cookie.setToken('useronline',true)
-        // store.commit('set_user_online',true)
-        // console.log(resp.message)
         console.log(response.message)
         window.alert(response.message)
-        // router.go(0)
-    })
-
-    //   postRequest('', {
-    //       username:form.userName,
-    //       password:form.password
-    //   }).then(resp=> {
-    //      console.log(resp)
-    //       response = resp
-    //       if(resp.status){
-    //         cookie.setToken('useronline',true)
-    //         store.commit('set_user_online',false)
-    //         window.alert('登陆成功')
-    //       }else{
-    //         cookie.setToken('useronline',false)
-    //       }
-    //       // router.go(0)
-    //   }, resp=> {
-    //       var response = {
-    //           status:false,
-    //           message:"网络连接中断"
-    //       }
-    //       cookie.setToken('useronline',true)
-    //       // store.commit('set_user_online',true)
-    //       // console.log(resp.message)
-    //       console.log(response.message)
-    //       window.alert(response.message)
-    //       // router.go(0)
-    //   })
+        router.go(0)
+      })
     }
-
-    registerReauest(){
+    registerReauest(form){
       postRequest(this.host + this.ip.register, {
           username:this.registerfrom.userName,
           password:this.registerfrom.password,
@@ -86,13 +55,14 @@ export default class Connect{
               status:false,
               message:"网络连接中断"
           }
-          // console.log(resp.message)
           console.log(response.message)
           window.alert(response.message)
       })
     }
     getKindsRequest(){
-       getRequest(this.host + this.ip).then(resp=>{
+       getRequest(this.host + this.ip,{
+
+       }).then(resp=>{
           return resp
        },resp=>{
           var res = {
@@ -102,4 +72,34 @@ export default class Connect{
           return res
         })
     }
+
+    setPersonMessage(form){
+      putRequest(this.host + this.ip.changeMessage, {
+
+      }).then(resp=>{
+        if(resp.status){
+          window.alert('更改个人信息成功')
+        }else{
+          window.alert('更改个人信息失败')
+        }
+      },resp=>{
+        window.alert('网络连接中断')
+      })
+    }
+
+    setChangePwd(form){
+      putRequest(this.host + this.ip.changePwd,{
+        oldPwd:form.oldPwd,
+        newPwd:form.newPwd
+      }).then(resp=>{
+        if(resp.status){
+          window.alert('更改密码成功')
+        }else{
+          window.alert('更改密码失败')
+        }
+      },resp=>{
+        window.alert('网络连接中断')
+      })
+    }
+
 }
