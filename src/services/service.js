@@ -3,7 +3,6 @@ import {} from '@/store/index'
 import router from '@/router/index'
 import store from '@/store/index'
 import cookie from '@/cookie/cookie'
-import VueResource from 'vue-resource'
 
 export default class Connect{
     constructor(){

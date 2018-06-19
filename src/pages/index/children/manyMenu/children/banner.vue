@@ -1,23 +1,23 @@
 <template>
     <div id="banner">
         {{message}}
-        <el-carousel type="card" height="200px" trigger="click" :interval="4000">
+        <el-carousel type="card" height="250px" trigger="click" :interval="4000">
             <el-carousel-item>
                 <div class="item-content">
                     <img src="~@/assets/img/echo.jpg">
-                    <div class="title" target="_blank">今日头条</div>
+                    <div class="title" target="_blank">灵魂的牧场</div>
                 </div>
             </el-carousel-item>
             <el-carousel-item>
                 <div class="item-content">
                     <img src="~@/assets/img/health.gif">
-                    <div class="title" target="_blank">今日头条</div>
+                    <div class="title" target="_blank">Three</div>
                 </div>
             </el-carousel-item>
             <el-carousel-item>
                 <div class="item-content">
                     <img src="~@/assets/img/toutiao.jpg">
-                    <div class="title" target="_blank">今日头条</div>
+                    <div class="title" target="_blank">漂</div>
                 </div>
             </el-carousel-item>
         </el-carousel>
