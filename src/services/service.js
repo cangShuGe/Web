@@ -188,4 +188,8 @@ export default class Connect{
       })
     }
 
+    downloadEbook(data){
+      return '123456@qq.com'
+    }
+
 }
