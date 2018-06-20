@@ -8,6 +8,10 @@ router.beforeEach((to, from, next) => {
     if(typeof(temp) !== undefined){
       store.commit('set_user_online',temp)
       let user = cookie.gettoken('user')
+      if(temp === true){
+        let userName = cookie.gettoken('userName')
+        store.commit('set_user_name',userName)
+      }
       if(user){
         user = JSON.parse(user)
         store.commit('set_user',user)
@@ -27,13 +31,8 @@ router.beforeEach((to, from, next) => {
         store.commit('set_user','')
         next('/index')
       }
-        
+
     } else {
-        // if (to.path === '/login' && cache.getToken()) {
-        //     next('/')
-        // } else {
-        //     next()
-        // }
         next()
     }
 })

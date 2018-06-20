@@ -3,19 +3,19 @@
         {{message}}
         <el-carousel type="card" height="250px" trigger="click" :interval="4000">
             <el-carousel-item>
-                <div class="item-content">
+                <div class="item-content" @click="ChangeView">
                     <img src="~@/assets/img/echo.jpg">
                     <div class="title" target="_blank">灵魂的牧场</div>
                 </div>
             </el-carousel-item>
             <el-carousel-item>
-                <div class="item-content">
+                <div class="item-content" @click="ChangeView">
                     <img src="~@/assets/img/health.gif">
                     <div class="title" target="_blank">Three</div>
                 </div>
             </el-carousel-item>
             <el-carousel-item>
-                <div class="item-content">
+                <div class="item-content" @click="ChangeView">
                     <img src="~@/assets/img/toutiao.jpg">
                     <div class="title" target="_blank">漂</div>
                 </div>
@@ -27,7 +27,12 @@
 import router from '@/router'
 export default {
     name: 'banner',
-    props:['message']
+    props:['message'],
+    methods:{
+      ChangeView(){
+        this.$router.push({name : 'bookBody'})
+      }
+    }
     // before
 }
 </script>

@@ -18,6 +18,10 @@ const ebook = () => import('@/pages/index/children/manyMenu/ebook')
 
 const Person = () => import('@/pages/person/person')
 const bookBody = () => import('@/pages/book/bookBody')
+const adminSide = () => import('@/pages/index/children/admin/admin')
+const adminUser = () => import ('@/pages/index/children/admin/adminchildren/adminuser')
+const adminRealBook = () => import('@/pages/index/children/admin/adminchildren/adminRealBook')
+// const adminEBook = () => import('@/pages/index/children/admin/adminchildren/adminRealBook')
 
 Vue.use(Router)
 
@@ -99,6 +103,23 @@ export const sideRoutes = [
         meta:{
           login:true
         }
+    },
+    {
+      name:'admin',
+      path:'/index/admin',
+      component:adminSide,
+      children:[
+        {
+          name : 'adminUser',
+          path : '/index/admin/user',
+          component:adminUser,
+        },
+        {
+          name:'adminRealBook',
+          path:'/index/admin/realbook',
+          component:adminRealBook
+        }
+      ]
     },
     {
       name : 'bookBody',

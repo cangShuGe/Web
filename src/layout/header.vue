@@ -124,7 +124,7 @@ export default {
         ])
     },
     created:function(){
-      // console.log(this.user.userName)
+     
     },
     watch: {
         $route() {

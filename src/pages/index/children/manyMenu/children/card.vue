@@ -3,7 +3,7 @@
         <el-row  :gutter="20">
             <el-col :span="6" v-for="(item,index) in list" :key="index" >
                 <div @click="ChangeView" class="grid-content bg-purple">
-                    <img :src="item.icon" alt="书籍封面">
+                    <img :src="url">
                     <div style="padding: 14px; text-align: center">
                         <span>{{item.title}}</span>
                     </div>
@@ -13,29 +13,50 @@
     </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 export default {
     name: 'card',
+    created:function(){
+      this.list[0].icon = this.url1
+      this.list[1].icon = this.url2
+      this.list[2].icon = this.url3
+      this.list[3].icon = this.url4
+    },
     data() {
         return {
+            url:'http://img02.tooopen.com/images/20160428/tooopen_sy_157230986799.jpg',
             list: [
                 {
-                    icon: this.$store.state.url1,
+                    icon: this.url1,
                     title: '红楼梦'
                 },
                 {
-                    icon: this.$store.state.url2,
+                    icon: this.url2,
                     title: '漂',
                 },
                 {
-                    icon: this.$store.state.url3,
+                    icon: this.url3,
                     title: '水浒传',
                 },
                 {
-                    icon: this.$store.state.url4,
+                    icon: this.url4,
                     title: '活着',
                 }
             ]
         }
+    },
+    computed: {
+        ...mapState([
+            'user',
+            'logs',
+            'useronline',
+            'user',
+            'userName',
+            'url1',
+            'url2',
+            'url3',
+            'url4'
+        ])
     },
     methods:{
       ChangeView(){

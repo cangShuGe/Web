@@ -417,22 +417,46 @@ export default {
             'user',
             'logs',
             'useronline',
-            'user'
+            'user',
+            'userName'
         ])
     },
     created:function(){
+
+      let connect = new Connect()
+      postRequest(connect.host + connect.ip.personMessage,{
+        account:this.userName
+      }).then(resp=>{
+        let message = resp.data.data
+        let usermessage ={
+          userName:message.account,
+          email:message.mailbox,
+          member:message.member,
+          credit:message.credit,
+          name:message.name,
+          sex:message.sex,
+          birthday:new Date(message.birthday)
+        }
+
+      
+
+        console.log(message)
+        console.log(usermessage)
+        cookie.setToken('user',usermessage)
+        router.go(0)
+      },resp=>{
+
+      })
+
+
 
       this.formInline.username = this.user.userName
       this.formInline.userId = this.user.userId
       this.formInline.birthday = new Date(this.user.birthday)
       this.formInline.sex = this.user.sex
-      // console.log(this.user)
-      // console.log(this.user.email)
       this.formInline.email = this.user.email
       this.formInline.member = this.user.member
       this.formInline.credit = this.user.credit
-
-      console.log(this.user.userName)
       if(this.formInline.member === 0){
         this.formInline.member = '您还不是会员'
       }else{

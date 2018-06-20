@@ -7,7 +7,7 @@ import cookie from '@/cookie/cookie'
 export default class Connect{
     constructor(){
       this.response,
-      this.host = "http://10.236.95.106:8888",
+      this.host = "http://10.236.132.70:8888",
       this.ip = {
          login:'/userLogin',
          register:'register',
@@ -29,8 +29,10 @@ export default class Connect{
         console.log(resp)
         if(resp.data.status){
           cookie.setToken('useronline',true)
+          cookie.setToken('userName',form.username)
+          store.commit('set_user_name',form.username)
           store.commit('set_user_online',true)
-          window.alert('登陆成功')
+          // window.alert('登陆成功')
           this.findPersonMessage(form.username)
         }else{
           cookie.setToken('useronline',false)
