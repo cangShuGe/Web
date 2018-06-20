@@ -347,7 +347,7 @@
         </el-main>
 
         <el-dialog title="更改密码" :visible.sync="changePwdDialog">
-            <el-form :model="formChangePwd" @submit.prevent="verifyPwd">
+            <el-form :model="formChangePwd" @submit.native.prevent="verifyPwd">
               <el-form-item>
                 <el-input placeholder="旧密码" type="password" v-model="formChangePwd.oldPwd" auto-complete="off"></el-input>
               </el-form-item>
@@ -438,7 +438,7 @@ export default {
           birthday:new Date(message.birthday)
         }
 
-      
+
 
         console.log(message)
         console.log(usermessage)
@@ -447,9 +447,6 @@ export default {
       },resp=>{
 
       })
-
-
-
       this.formInline.username = this.user.userName
       this.formInline.userId = this.user.userId
       this.formInline.birthday = new Date(this.user.birthday)

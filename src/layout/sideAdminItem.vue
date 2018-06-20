@@ -52,6 +52,7 @@ export default {
     },
     methods: {
         changeAdminEbook(){
+          this.$router.push({name:'adminEBook'})
 
         },
         adminRealBook(){

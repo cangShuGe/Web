@@ -10,14 +10,8 @@
         <el-form-item label="书籍名称:">
           <el-input placeholder="书籍名称" v-model="form.bookName" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="书籍编号:">
+        <el-form-item label="书籍编号">
           <el-input placeholder="书籍编号" v-model="form.bookNo" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="作者:">
-          <el-input placeholder="作者" v-model="form.author" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="出版时间：">
-          <el-date-picker v-model="form.publishTime" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="书籍分类:">
           <el-autocomplete
@@ -33,17 +27,11 @@
           </template>
           </el-autocomplete>
         </el-form-item>
-        <el-form-item label="库存:">
-          <el-input v-model="form.total" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="价格：">
+        <el-form-item label="所需积分：">
           <el-input v-model="form.price" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="出版社:">
-          <el-input placeholder="出版社" v-model="form.press" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="书籍简介:">
-          <el-input placeholder="书籍简介" v-model="form.resume" auto-complete="off"></el-input>
+        <el-form-item label="书籍简介">
+          <el-input v-model="form.resume" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="选择图片">
           <el-button type="primary" @click="dialogVisible = true">点击选择图片</el-button>
@@ -86,13 +74,12 @@ export default {
         return {
           dialogVisible:false,
           form:{
-            total:0,
             catalogname:'',
             bookName:'',
             bookNo:'',
             author:'',
             catalogno:'',
-            publishTime:new Date(),
+            publishTime:new Date().getTime,
             press:'',
             price:0,
             resume:'',
@@ -111,7 +98,7 @@ export default {
     },
     created:function(){
       let connect = new Connect()
-      postRequest(connect.host + connect.ip.kinds,{
+      postRequest(connect.host + connect.ip.Ekinds,{
 
       }).then(resp=>{
         if(resp.data.status){
@@ -168,32 +155,12 @@ export default {
           this.$message.error('请填写书籍名称')
           return ;
         }
-        if(!this.form.author){
-          this.$message.error('请填写作者姓名')
-          return ;
-        }
         if(!this.form.catalogno){
           this.$message.error('请选择书籍种类')
           return ;
         }
-        if(!this.form.publishTime){
-          this.$message.error('请选择出版时间')
-          return ;
-        }
-        if(!this.form.press){
-          this.$message.error('请填写出版社信息')
-          return ;
-        }
         if(!this.form.price){
           this.$message.error('请填写价格信息')
-          return ;
-        }
-        if(!this.form.total){
-          this.$message.error('请填写库存信息')
-          return ;
-        }
-        if(!this.form.author){
-          this.$message.error('请填写作者姓名')
           return ;
         }
         if(this.form.resume){
@@ -203,7 +170,7 @@ export default {
           para['url'] = this.form.url
         }
 
-        postRequest(connect.host + connect.ip.addBook,
+        postRequest(connect.host + connect.ip.addEBook,
         para).then(resp=>{
 
           if(resp.data.status){

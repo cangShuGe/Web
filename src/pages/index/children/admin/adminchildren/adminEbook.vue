@@ -1,5 +1,5 @@
 <template>
-    <div id="adminuser">
+    <div id="adminebook">
       <el-container direction="horizontal">
           <el-main id="main">
             <h3>增加书籍分类</h3>
@@ -17,13 +17,13 @@
     </div>
 </template>
 <script>
-import myAdd from './realbook/realbookadd'
-import myChange from './realbook/realbookchange'
-import myDelete from './realbook/realbookdelete'
-import kindAdd from './realbook/kindsadd'
-import kindDelete from './realbook/kindsdelete'
+import myAdd from './ebook/ebookadd'
+import myChange from './ebook/ebookchange'
+import myDelete from './ebook/ebookdelete'
+import kindAdd from './ebook/kindsadd'
+import kindDelete from './ebook/kindsdelete'
 export default {
-    name: 'adminuser',
+    name: 'adminebook',
     components: { myAdd, myChange, myDelete,kindAdd, kindDelete},
     data() {
         return {
@@ -33,7 +33,7 @@ export default {
 }
 </script>
 <style lang='stylus'>
-#adminuser {
+#adminebook {
 
 }
 </style>

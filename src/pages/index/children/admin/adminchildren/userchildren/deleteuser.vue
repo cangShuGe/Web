@@ -1,27 +1,5 @@
 <template>
     <div id="deleteuser">
-      <el-row :gutter="20">
-        <el-col :span="6" :offset="1"><div class="grid-content"><b>通过用户ID删除用户账号:</b></div></el-col>
-      </el-row>
-      <br>
-      <br>
-
-      <el-row :gutter="20">
-        <el-col :span="23" :offset="1">
-          <div class="grid-content">
-      <el-form :model="form" :inline="true" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="用户ID：">
-          <el-input v-model="form.ID" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-input type="submit" value="删除"></el-input>
-        </el-form-item>
-      </el-form>
-          </div>
-        </el-col>
-      </el-row>
-
-
 
       <el-row :gutter="20">
         <el-col :span="23" :offset="1"><div class="grid-content"><b>通过用户名删除用户账号:</b></div></el-col>
@@ -32,7 +10,7 @@
       <el-row :gutter="20">
         <el-col :span="23" :offset="1">
           <div class="grid-content">
-      <el-form :model="formAccount" :inline="true" label-width="100px" class="demo-ruleForm">
+      <el-form :model="formAccount" :inline="true" label-width="100px" class="demo-ruleForm" @submit.native.prevent="AccountDelete">
         <el-form-item label="用户名：">
           <el-input v-model="formAccount.account" auto-complete="off"></el-input>
         </el-form-item>
@@ -53,7 +31,7 @@
       <el-row :gutter="20">
         <el-col :span="23" :offset="1">
           <div class="grid-content">
-      <el-form :model="formEmail" :inline="true" label-width="100px" class="demo-ruleForm">
+      <el-form @submit.native.prevent="MailDelete" :model="formEmail" :inline="true" label-width="100px" class="demo-ruleForm">
         <el-form-item label="用户邮箱：">
           <el-input type="email" v-model="formEmail.email" auto-complete="off"></el-input>
         </el-form-item>
@@ -68,21 +46,74 @@
     </div>
 </template>
 <script>
+import { postRequest,putRequest,getRequest } from '@/utils/api'
+import Connect from '@/services/service'
 export default {
     name: 'changeuser',
     data() {
         return {
-          form:{
-            ID:'adfasd'
-          },
           formAccount:{
-            account:'sdfasd'
+            account:''
           },
           formEmail:{
-            email:'sdfas@ada.com'
+            email:''
           }
 
         }
+    },
+    methods:{
+      AccountDelete(){
+        this.$confirm('确定要删除吗，删除后不可恢复').then(_=>{
+          if(!this.formAccount.account){
+            this.$message.error('请确认用户名信息已填写')
+            return;
+          }
+
+          let connect = new Connect()
+
+          postRequest(connect.host + connect.accountDelete,
+          this.formAccount).then(resp=>{
+
+            if(resp.data.status){
+              this.$message.alert('删除成功')
+            }
+
+          },resp=>{
+             if(typeof(resp.data) !== undefined || resp.data == null){
+              this.$message.error('网络连接失败！')
+            }else{
+              this.$message.error('删除失败！')
+            }
+          })
+
+        }).catch(_=>{})
+      },
+      MailDelete(){
+        this.$confirm('确定要删除吗，删除后不可恢复').then(_=>{
+          if(!this.formEmail.email){
+            this.$message.error('请确认邮箱信息已填写')
+            return;
+          }
+
+          let connect = new Connect()
+
+          postRequest(connect.host + connect.emaiDelete,
+          this.formEmail).then(resp=>{
+
+            if(resp.data.status){
+              this.$message.alert('删除成功')
+            }
+
+          },resp=>{
+             if(typeof(resp.data) !== undefined || resp.data == null){
+              this.$message.error('网络连接失败！')
+            }else{
+              this.$message.error('删除失败！')
+            }
+          })
+
+        }).catch(_=>{})
+      }
     }
 }
 </script>

@@ -1,12 +1,12 @@
 <template>
     <div id="realbookchange">
       <el-row :gutter="20">
-        <el-col :span="6" :offset="1"><div class="grid-content"><b>书籍信息:</b></div></el-col>
+        <el-col :span="6" :offset="1"><div class="grid-content"><b>不可更改信息:</b></div></el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="23" :offset="1">
           <div class="grid-content">
-      <el-form :model="form" :inline="true" label-width="100px" class="demo-ruleForm" @submit.native.prevent="DeleteBook">
+      <el-form :model="form" :inline="true" label-width="100px" class="demo-ruleForm" @submit.native.prevent="ChangeBook">
         <el-form-item label="书籍名称:">
           <el-autocomplete
             class="inline-input"
@@ -16,20 +16,8 @@
             @select="handleSelect"
           >
           <template slot-scope="{ item }">
+          <!-- <div class="name">{{ item.bookname }}</div> -->
           <div class="name" style="color:green">{{ item.value=item.bookname }}</div>
-          </template>
-          </el-autocomplete>
-        </el-form-item>
-        <el-form-item label="作者：">
-          <el-autocomplete
-            class="inline-input"
-            v-model="form.author"
-            :fetch-suggestions="queryAuthorSearch"
-            placeholder="作者"
-            @select="handleSelect"
-          >
-          <template slot-scope="{ item }">
-          <div class="name" style="color:green">{{ item.value=item.author }}</div>
           </template>
           </el-autocomplete>
         </el-form-item>
@@ -42,12 +30,20 @@
             @select="handleSelect"
           >
           <template slot-scope="{ item }">
+          <!-- <div class="name">{{ item.bookname }}</div> -->
           <div class="name" style="color:green">{{ item.value=item.bookno }}</div>
           </template>
           </el-autocomplete>
         </el-form-item>
+
+        <el-row :gutter="20">
+        <el-col :span="6" :offset="1"><div class="grid-content"><b>可更改信息:</b></div></el-col>
+        </el-row>
+        <el-form-item label="价格:">
+          <el-input type="number" step="0.01" v-model="form.price" auto-complete="off"></el-input>
+        </el-form-item>
         <el-form-item>
-          <el-input type="submit" value="删除"></el-input>
+          <el-input type="submit" value="更改"></el-input>
         </el-form-item>
       </el-form>
           </div>
@@ -97,7 +93,7 @@ export default {
     },
     created:function(){
       let connect = new Connect()
-      postRequest(connect.host + connect.ip.kinds,{
+      postRequest(connect.host + connect.ip.Ekinds,{
 
       }).then(resp=>{
         if(resp.data.status){
@@ -107,7 +103,7 @@ export default {
       },resp => {
 
       })
-      postRequest(connect.host + connect.ip.allBooks,{
+      postRequest(connect.host + connect.ip.allEBooks,{
 
       }).then(resp=>{
         if(resp.data.status){
@@ -131,33 +127,13 @@ export default {
       queryNameSearch(queryString, cb) {
         let all = this.all;
         let results = queryString ? all.filter(this.createNameFilter(queryString)) : all;
-        // console.log(results)
-        // let list = []
-        // for(var item = 0;item < all.length;item++){
-        //   let dic = {}
-        //   dic['value'] = all[item].bookname
-        //   // console.log(dic)
-        //   list.push(dic)
-        // }
-        // 调用 callback 返回建议列表的数据
+
         cb(results);
       },
       createNameFilter(queryString) {
         // for(item in )
         return (restaurant) => {
           return (restaurant.bookname.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-        };
-      },
-      queryAuthorSearch(queryString, cb) {
-        let all = this.all;
-        let results = queryString ? all.filter(this.createAuthorFilter(queryString)) : all;
-        // 调用 callback 返回建议列表的数据
-        cb(results);
-
-      },
-      createAuthorFilter(queryString) {
-        return (restaurant) => {
-          return (restaurant.author.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
         };
       },
       queryKindsSearch(queryString, cb) {
@@ -174,33 +150,37 @@ export default {
       handleSelect(item) {
         this.form.bookName = item.bookname
         this.form.bookNo = item.bookno
-        this.form.author = item.author
-        this.form.total = item.total
         this.form.price = item.price
         console.log(item);
       },
-      DeleteBook(){
-        this.$confirm('确定要删除吗，删除后不可更改').then(_=>{
+      ChangeBook(){
+        this.$confirm('确定要更改书籍信息吗？').then(_=>{
 
-          let connect = new Connect()
           let para = {
-            bookno:this.form.bookNo
+            bookno:this.form.bookNo,
           }
-          if(!this.form.bookNo || this.form.bookNo.length === 0){
-            this.$message.error('书籍ID为必填字段，请重新填写')
+          if(this.form.price === null){
+            this.$message.error('您还没填写花费的积分数量！')
             return;
+          }else{
+            para['price'] = this.form.price
           }
-          postRequest(connect.host + connect.ip.deleteBook,
+          let connect = new Connect()
+          postRequest(connect.host + connect.ip.updateEBook,
           para).then(resp=>{
+
             if(resp.data.status){
-              this.$message.alert('删除成功！')
+              this.$message.alert('更改成功！')
             }
+
           },resp=>{
+
             if(typeof(resp.data) !== undefined || resp.data == null){
               this.$message.error('网络连接失败！')
             }else{
-              this.$message.error('删除失败！')
+              this.$message.error('更改失败！')
             }
+
           })
 
         }).catch(_=>{

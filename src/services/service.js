@@ -17,10 +17,10 @@ export default class Connect{
          buySaleCar:'购买购物车商品',
          buyVip:'购买会员',
          userRemark:'用户评分',
-         personMessage:'/selectUser'
+         personMessage:'/selectUser',
+         addBook:'增加书籍'
       }
     }
-
     loginRequest(form){
       postRequest(this.host + this.ip.login, {
         account:form.username,
@@ -191,6 +191,30 @@ export default class Connect{
 
     downloadEbook(data){
       return '123456@qq.com'
+    }
+
+    addBook(form){
+      postRequest(this.host + this.ip.addBook,{
+        bookname:form.bookName,
+        catalogno:form.catalogno,
+        author:form.author,
+        press:form.press,
+        publishTime:form.publishTime.getTime(),
+        price:form.price,
+        total:form.total,
+        url:form.url,
+        resume:form.resume
+      }).then(resp=>{
+        if(resp.data.status){
+          window.alert('添加成功')
+        }
+      },resp=>{
+        if(!resp){
+          window.alert('网络连接失败!')
+        }else{
+          window.alert(resp.data.message)
+        }
+      })
     }
 
 }

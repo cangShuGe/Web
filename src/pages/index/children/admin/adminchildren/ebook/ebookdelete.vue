@@ -20,19 +20,6 @@
           </template>
           </el-autocomplete>
         </el-form-item>
-        <el-form-item label="作者：">
-          <el-autocomplete
-            class="inline-input"
-            v-model="form.author"
-            :fetch-suggestions="queryAuthorSearch"
-            placeholder="作者"
-            @select="handleSelect"
-          >
-          <template slot-scope="{ item }">
-          <div class="name" style="color:green">{{ item.value=item.author }}</div>
-          </template>
-          </el-autocomplete>
-        </el-form-item>
         <el-form-item label="书籍ID:">
           <el-autocomplete
             class="inline-input"
@@ -97,7 +84,7 @@ export default {
     },
     created:function(){
       let connect = new Connect()
-      postRequest(connect.host + connect.ip.kinds,{
+      postRequest(connect.host + connect.ip.Ekinds,{
 
       }).then(resp=>{
         if(resp.data.status){
@@ -148,18 +135,6 @@ export default {
           return (restaurant.bookname.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
         };
       },
-      queryAuthorSearch(queryString, cb) {
-        let all = this.all;
-        let results = queryString ? all.filter(this.createAuthorFilter(queryString)) : all;
-        // 调用 callback 返回建议列表的数据
-        cb(results);
-
-      },
-      createAuthorFilter(queryString) {
-        return (restaurant) => {
-          return (restaurant.author.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-        };
-      },
       queryKindsSearch(queryString, cb) {
         let all = this.all;
         let results = queryString ? all.filter(this.createKindsFilter(queryString)) : all;
@@ -186,21 +161,27 @@ export default {
           let para = {
             bookno:this.form.bookNo
           }
-          if(!this.form.bookNo || this.form.bookNo.length === 0){
+
+          if(!this.form.bookNo){
             this.$message.error('书籍ID为必填字段，请重新填写')
-            return;
+            return ;
           }
-          postRequest(connect.host + connect.ip.deleteBook,
+
+
+          postRequest(connect.host + connect.ip.deleteEBook,
           para).then(resp=>{
+
             if(resp.data.status){
               this.$message.alert('删除成功！')
             }
+
           },resp=>{
             if(typeof(resp.data) !== undefined || resp.data == null){
               this.$message.error('网络连接失败！')
             }else{
               this.$message.error('删除失败！')
             }
+
           })
 
         }).catch(_=>{

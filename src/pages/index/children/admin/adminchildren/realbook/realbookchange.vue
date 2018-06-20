@@ -1,53 +1,64 @@
 <template>
     <div id="realbookchange">
       <el-row :gutter="20">
-        <el-col :span="6" :offset="1"><div class="grid-content"><b>通过用户ID更改用户邮箱:</b></div></el-col>
+        <el-col :span="6" :offset="1"><div class="grid-content"><b>不可更改信息:</b></div></el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="23" :offset="1">
           <div class="grid-content">
-      <el-form :model="form" :inline="true" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="书籍名称">
+      <el-form :model="form" :inline="true" label-width="100px" class="demo-ruleForm" @submit.native.prevent="ChangeBook">
+        <el-form-item label="书籍名称:">
           <el-autocomplete
             class="inline-input"
-            v-model="state1"
+            v-model="form.bookName"
             :fetch-suggestions="queryNameSearch"
-            placeholder="书籍名称："
+            placeholder="书籍名称"
             @select="handleSelect"
-          ></el-autocomplete>
+          >
+          <template slot-scope="{ item }">
+          <!-- <div class="name">{{ item.bookname }}</div> -->
+          <div class="name" style="color:green">{{ item.value=item.bookname }}</div>
+          </template>
+          </el-autocomplete>
         </el-form-item>
         <el-form-item label="作者：">
           <el-autocomplete
             class="inline-input"
-            v-model="state2"
+            v-model="form.author"
             :fetch-suggestions="queryAuthorSearch"
             placeholder="作者"
             @select="handleSelect"
-          ></el-autocomplete>
+          >
+          <template slot-scope="{ item }">
+          <!-- <div class="name">{{ item.bookname }}</div> -->
+          <div class="name" style="color:green">{{ item.value=item.author }}</div>
+          </template>
+          </el-autocomplete>
         </el-form-item>
         <el-form-item label="书籍ID:">
           <el-autocomplete
             class="inline-input"
             v-model="form.bookNo"
             :fetch-suggestions="queryIDSearch"
-            placeholder="书籍ID："
+            placeholder="书籍ID"
             @select="handleSelect"
-          ></el-autocomplete>
+          >
+          <template slot-scope="{ item }">
+          <!-- <div class="name">{{ item.bookname }}</div> -->
+          <div class="name" style="color:green">{{ item.value=item.bookno }}</div>
+          </template>
+          </el-autocomplete>
         </el-form-item>
-        <el-form-item label="种类">
-          <el-autocomplete
-            class="inline-input"
-            v-model="state2"
-            :fetch-suggestions="querySearch"
-            placeholder="种类："
-            @select="handleSelect"
-          ></el-autocomplete>
+
+        <el-row :gutter="20">
+        <el-col :span="6" :offset="1"><div class="grid-content"><b>可更改信息:</b></div></el-col>
+        </el-row>
+
+        <el-form-item label="库存:">
+          <el-input v-model="form.total" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="库存">
-          <el-input v-model="form.num" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="价格">
-          <el-input v-model="form.price" auto-complete="off"></el-input>
+        <el-form-item label="价格:">
+          <el-input type="number" step="0.01" v-model="form.price" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item>
           <el-input type="submit" value="更改"></el-input>
@@ -66,13 +77,13 @@ export default {
     data() {
         return {
           form:{
-            num:0,
             bookName:'',
             bookNo:'',
             author:'',
             catalogno:'',
             publishTime:new Date(),
             press:'',
+            total:0,
             price:0,
             resume:'',
             url:''
@@ -82,7 +93,20 @@ export default {
             email:'asdfasdf'
           },
           kinds:[],
-          all:[],
+          all:[
+{bookno:'1',  bookname:'高级程序语言设计',catalogno: '1', author:'张小东', publishTime:'20100510', press:'哈尔滨工业大学出版社', total:26, price:100,resume: '本书是计算机学生的入门必读书籍，是学习计算机的开始教程！',url: ''},
+{bookno:'1',  bookname:'高级程序语言设计',catalogno: '1', author:'张小东', publishTime:'20100510', press:'哈尔滨工业大学出版社', total:26, price:100,resume: '本书是计算机学生的入门必读书籍，是学习计算机的开始教程！',url: ''},
+{bookno:'1',  bookname:'高级程序语言设计',catalogno: '1', author:'张小东', publishTime:'20100510', press:'哈尔滨工业大学出版社', total:26, price:100,resume: '本书是计算机学生的入门必读书籍，是学习计算机的开始教程！',url: ''},
+{bookno:'1',  bookname:'高级程序语言设计',catalogno: '1', author:'张小东', publishTime:'20100510', press:'哈尔滨工业大学出版社', total:26, price:100,resume: '本书是计算机学生的入门必读书籍，是学习计算机的开始教程！',url: ''},
+{bookno:'1',  bookname:'高级程序语言设计',catalogno: '1', author:'张小东', publishTime:'20100510', press:'哈尔滨工业大学出版社', total:26, price:100,resume: '本书是计算机学生的入门必读书籍，是学习计算机的开始教程！',url: ''},
+{bookno:'1',  bookname:'高级程序语言设计',catalogno: '1', author:'张小东', publishTime:'20100510', press:'哈尔滨工业大学出版社', total:26, price:100,resume: '本书是计算机学生的入门必读书籍，是学习计算机的开始教程！',url: ''},
+{bookno:'1',  bookname:'高级程序语言设计',catalogno: '1', author:'张小东', publishTime:'20100510', press:'哈尔滨工业大学出版社', total:26, price:100,resume: '本书是计算机学生的入门必读书籍，是学习计算机的开始教程！',url: ''},
+{bookno:'1',  bookname:'高级程序语言设计',catalogno: '1', author:'张小东', publishTime:'20100510', press:'哈尔滨工业大学出版社', total:26, price:100,resume: '本书是计算机学生的入门必读书籍，是学习计算机的开始教程！',url: ''},
+{bookno:'1',  bookname:'高级程序语言设计',catalogno: '1', author:'张小东', publishTime:'20100510', press:'哈尔滨工业大学出版社', total:26, price:100,resume: '本书是计算机学生的入门必读书籍，是学习计算机的开始教程！',url: ''},
+{bookno:'1',  bookname:'高级程序语言设计',catalogno: '1', author:'张小东', publishTime:'20100510', press:'哈尔滨工业大学出版社', total:26, price:100,resume: '本书是计算机学生的入门必读书籍，是学习计算机的开始教程！',url: ''},
+{bookno:'1',  bookname:'高级程序语言设计',catalogno: '1', author:'张小东', publishTime:'20100510', press:'哈尔滨工业大学出版社', total:26, price:100,resume: '本书是计算机学生的入门必读书籍，是学习计算机的开始教程！',url: ''},
+
+          ],
         }
     },
     created:function(){
@@ -108,8 +132,8 @@ export default {
     },
     methods:{
       queryIDSearch(queryString, cb) {
-        var all = this.all;
-        var results = queryString ? all.filter(this.createIDFilter(queryString)) : all;
+        let all = this.all;
+        let results = queryString ? all.filter(this.createIDFilter(queryString)) : all;
         // 调用 callback 返回建议列表的数据
         cb(results);
       },
@@ -119,29 +143,87 @@ export default {
         };
       },
       queryNameSearch(queryString, cb) {
-        var all = this.all;
-        var results = queryString ? all.filter(this.createNameFilter(queryString)) : all;
-        // 调用 callback 返回建议列表的数据
+        let all = this.all;
+        let results = queryString ? all.filter(this.createNameFilter(queryString)) : all;
+
         cb(results);
       },
       createNameFilter(queryString) {
+        // for(item in )
         return (restaurant) => {
           return (restaurant.bookname.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
         };
       },
       queryAuthorSearch(queryString, cb) {
-        var all = this.all;
-        var results = queryString ? all.filter(this.createAuthorFilter(queryString)) : all;
+        let all = this.all;
+        let results = queryString ? all.filter(this.createAuthorFilter(queryString)) : all;
         // 调用 callback 返回建议列表的数据
         cb(results);
+
       },
       createAuthorFilter(queryString) {
         return (restaurant) => {
           return (restaurant.author.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
         };
       },
+      queryKindsSearch(queryString, cb) {
+        let all = this.all;
+        let results = queryString ? all.filter(this.createKindsFilter(queryString)) : all;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      },
+      createKindsFilter(queryString) {
+        return (restaurant) => {
+          return (restaurant.author.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
       handleSelect(item) {
+        this.form.bookName = item.bookname
+        this.form.bookNo = item.bookno
+        this.form.author = item.author
+        this.form.total = item.total
+        this.form.price = item.price
         console.log(item);
+      },
+      ChangeBook(){
+        this.$confirm('确定要更改书籍信息吗？').then(_=>{
+
+          let para = {
+            bookno:this.form.bookNo,
+          }
+          if(this.form.price === null){
+            this.$message.error('价格和库存为必填字段，请重新填写')
+            return;
+          }else{
+            para['price'] = this.form.price
+          }
+          if(this.form.total == null){
+            this.$message.error('价格和库存为必填字段，请重新填写')
+            return;
+          }else{
+            para['total'] == this.form.total
+          }
+          let connect = new Connect()
+          postRequest(connect.host + connect.ip.updateBook,
+          para).then(resp=>{
+
+            if(resp.data.status){
+              this.$message.alert('更改成功！')
+            }
+
+          },resp=>{
+
+            if(typeof(resp.data) !== undefined || resp.data == null){
+              this.$message.error('网络连接失败！')
+            }else{
+              this.$message.error('更改失败！')
+            }
+
+          })
+
+        }).catch(_=>{
+
+        })
       }
 
     }
