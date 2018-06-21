@@ -3,53 +3,94 @@ import {} from '@/store/index'
 import router from '@/router/index'
 import store from '@/store/index'
 import cookie from '@/cookie/cookie'
-
+import axios from "axios"
 export default class Connect{
     constructor(){
       this.response,
-      this.host = "http://10.236.132.70:8888",
+      this.host = "http://10.236.26.88:8888",
       this.ip = {
          login:'/userLogin',
-         register:'register',
+         register:'/userSign',
          changeMessage:'/updateUser',
-         changePwd:'更改密码',
-         deleteSaleCar:'删除购物车商品',
-         buySaleCar:'购买购物车商品',
-         buyVip:'购买会员',
-         userRemark:'用户评分',
+         changePwd:'/updatePwd',
+         showMyBuy:'/getRecordsByAcc',
+         deleteMyBuy:'/delRecord',
+         deleteSaleCar:'/delcart',//删除购物车商品
+         updateSaleCar:'/updatecarbook',
+         buySaleCar:'/buyBooksCart',//购买购物车商品
+         addSaleCar:'/addbook',//商品加入购物车
+         showSaleCar:'/getallfromcart',//获取购物车书籍信息
+         buyVip: '/huiyuan',//购买会员
+         userRemark: '/updatescore', //用户评分
+         userPingjia:'/updateJudge',//评价
          personMessage:'/selectUser',
-         addBook:'增加书籍'
+         updateUser:'/updateUser',//更改用户信息
+         showUser:'selectUser',//查看用户信息
+         showMyEbook:'/getshelfbyacc',
+         deleteMyEbook:'/delbookshelf',
+
+         buyBookNow:'/buyBooks',//立即购买
+
+         allBooks:'/getAllBooks',//全部书籍
+         allKindsBooks:'/getBooksByCata',//分类全部书籍
+         searchBooks:'/getBookByName',//按照作者、书籍名模糊搜索书籍
+         getBookByNo:'/getBookByNo',//根据编号获取书籍的全部信息
+         addBook:'',   //'增加书籍',
+         deleteBook:'删除书籍地址',
+         updateBook: '/updbooks', //更新书籍信息地址
+         kinds: '/adminShowCata',//书籍种类地址
+         deleteKinds: '/delbooks',//删除书籍种类地址
+         addKinds:'/addcatalog',//添加书籍分类
+
+         allEBooks:'/getOnBooks',
+         allKindsEBooks: '/getByCata',//分类全部书籍
+         searchEBooks: '/getByNameOrAuth',//按照作者、书籍名模糊搜索书籍
+         getEBookByNo: '/getonbyno',//根据编号获取书籍的全部信息
+         Ekinds:'/adminShowCata',//电子书种类地址
+         addEBook:'添加电子书地址',
+         updateEBook:'更新电子书籍地址',
+         deleteEBook:'删除电子书地址',
+         addEKinds: '/addcatalog',//添加电子书籍种类地址
+         deleteEKinds:'删除电子书籍种类地址',
+
+         changeMail: '/adminupdateusers',//修改邮箱地址
+         accountDelete: '/admindelusers',//通过用户名删除账号
+         emaiDelete: '/admindelusers',//通过邮箱删除账号
+
       }
     }
     loginRequest(form){
-      postRequest(this.host + this.ip.login, {
-        account:form.username,
-        pwd:form.password
-      }).then(resp=> {
-        console.log(resp)
-        if(resp.data.status){
-          cookie.setToken('useronline',true)
-          cookie.setToken('userName',form.username)
-          store.commit('set_user_name',form.username)
-          store.commit('set_user_online',true)
-          // window.alert('登陆成功')
-          this.findPersonMessage(form.username)
-        }else{
-          cookie.setToken('useronline',false)
-        }
-        // router.go(0)
-      }, resp=> {
-        if(resp == null || resp)
-        console.log(resp)
-        var response = {
-            status:false,
-            message:"网络连接中断"
-        }
-        cookie.setToken('useronline',true)
-        console.log(response.message)
-        window.alert(response.message)
-        // router.go(0)
-      })
+      axios.post(this.host + this.ip.login + '?account='+form.username+'&pwd='+form.password, {
+        account: form.username,
+        pwd: form.password,
+        mailbox: "this.registerfrom.email",
+        member: 0,
+        address: "sdfasd",
+        credit: 0,
+        name: "",
+        sex: "",
+        birthday: 0
+      }).then(resp => {
+          console.log(resp);
+          if (resp.data.status) {
+            cookie.setToken("useronline", true);
+            cookie.setToken("userName", form.username);
+            store.commit("set_user_name", form.username);
+            store.commit("set_user_online", true);
+            // window.alert('登陆成功')
+            this.findPersonMessage(form.username);
+          } else {
+            cookie.setToken("useronline", false);
+          }
+          // router.go(0)
+        }, resp => {
+          if (resp == null || resp) console.log(resp);
+          var response = { status: false, message: "网络连接中断" };
+          cookie.setToken("useronline", true);
+          console.log(response.message);
+          window.alert(response.message);
+          // router.go(0)
+        });
     }
     registerReauest(form){
       postRequest(this.host + this.ip.register, {
@@ -167,18 +208,20 @@ export default class Connect{
     }
 
     findPersonMessage(userName){
-      postRequest(this.host + this.ip.personMessage,{
+      postRequest(this.host + this.ip.personMessage + '?account='+userName,{
         account:userName
       }).then(resp=>{
         let message = resp.data.data
+        console.log(message)
         let usermessage ={
           userName:message.account,
+          // password:message.password,
           email:message.mailbox,
           member:message.member,
           credit:message.credit,
           name:message.name,
           sex:message.sex,
-          birthday:new Date(message.birthday)
+          birthday:message.birthday
         }
         console.log(message)
         console.log(usermessage)

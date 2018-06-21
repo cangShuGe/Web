@@ -1,7 +1,7 @@
 <template>
     <div id="realbook">
-        <my-banner :message="realBook.kind"></my-banner>
-       <my-card></my-card>
+        <my-banner :message="id" :ebook="ebook"></my-banner>
+       <my-card :message="id" :ebook="ebook"></my-card>
     </div>
 </template>
 <script>
@@ -15,14 +15,17 @@ export default {
             'user',
             'logs',
             'useronline',
-            'kinds',
-            'Ebook',
-            'realBook'
         ])
+    },
+    created:function(){
+      console.log(this.$route.params.id)
+      this.id = this.$route.params.id
     },
     components:{myBanner,myCard},
     data() {
         return {
+          id:'',
+          ebook:false,
         }
     }
 }

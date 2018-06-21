@@ -18,14 +18,6 @@ const state = {
     }, // 用户信息
     userName:'',
     useronline:true,
-    kinds:{xuanhuan:'玄幻',xiuzhen:'修真',mingzhu:'名著'},
-    Ebook:{'id':'001','kind':'woshuisf'},
-    realBook:{'id':'001','kind':'sdjfsldjf'},
-
-    url1:'static/assets/img/hongloumeng.jpg',
-    url2:'static/img/piao.jpg',
-    url3:'static/img/shuihuzhuan.jpg',
-    url4:'static/img/huozhe.jpg' //存储主页图片路径 使用require获取图片真实地址
 }
 
 const getters = {

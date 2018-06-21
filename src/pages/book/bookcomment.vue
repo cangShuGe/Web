@@ -91,7 +91,30 @@
         }]
       }
     },
+    props:['id'],
+    created:function(){
+
+    },
     methods: {
+      getBookRecord(){
+
+        let connect = new Connect()
+        axios.post(connect.host+connect.ip.addSaleCar ,{
+          account:this.user.userName,
+          bookno:this.id,
+          addtime:new Date().getTime(),
+          num:this.form.num1
+        }).then(resp=>{
+          this.$message.success(resp.data.message)
+        },resp=>{
+            if(!resp.data){
+              this.$message.error('网络连接失败')
+            }else{
+              this.$message.error(resp.data.message)
+            }
+        })
+
+      }
     }
   }
 </script>

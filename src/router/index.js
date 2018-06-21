@@ -47,54 +47,14 @@ export const sideRoutes = [
               name : 'RealBook',
               path : '/index/realbook/:id',
               component:realbook,
+              props:true
           },
           {
               name : 'Ebook',
               path : '/index/ebook/:id',
               component:ebook,
+              props:true
           },
-          {
-              name: 'manyMenu',
-              path: 'manyMenu',
-              component: view,
-              redirect: '/index/manyMenu/example',
-              meta: {
-                  icon: 'el-icon-menu',
-                  title: '多级菜单',
-                  open: true
-              },
-              children: [
-                  {
-                      name: 'example',
-                      path: 'example',
-                      component: example,
-                      meta: {
-                          icon: 'el-icon-my-ravelry',
-                          title: '示例'
-                      }
-                  },
-                  {
-                      name: 'table',
-                      path: 'table',
-                      component: table,
-                      meta: {
-                          icon: 'el-icon-my-chart',
-                          title: '表格'
-                      }
-                  },
-                  {
-                      name: 'permission',
-                      path: 'permission',
-                      icon: 'el-icon-my-lock',
-                      meta: {
-                          icon: 'el-icon-my-lock',
-                          title: '权限测试',
-                          role: 'admin'
-                      },
-                      component: permission
-                  }
-              ]
-          }
         ]
     },
     {
@@ -129,8 +89,9 @@ export const sideRoutes = [
     },
     {
       name : 'bookBody',
-      path : '/index/bookBody',
+      path : '/index/bookBody/:bookid',
       component:bookBody,
+      props:true,
     },
 
 ]

@@ -43,6 +43,7 @@
     </div>
 </template>
 <script>
+import axios from "axios"
 import { postRequest,putRequest,getRequest } from '@/utils/api'
 import Connect from '@/services/service'
 export default {
@@ -62,23 +63,28 @@ export default {
             {catalogno:'123123',catalogname:'asdfasdfasdf'},
             {catalogno:'123123',catalogname:'asdfasdfasdf'},
             {catalogno:'123123',catalogname:'asdfasdfasdf'},
-          ]
+          ],
+          allTotal:1,
         }
     },
     created:function(){
-      let connect = new Connect()
-      postRequest(connect.host + connect.ip.Ekinds,{
-
-      }).then(resp=>{
-        if(resp.data.status){
-          this.kinds = resp.data.data
-        }
-      },resp => {
-
-      })
+      // for(var i = 1; i <= (kindsTotal)/10 + 1;i++){
+        this.getKinds()
+      // }
     },
     methods:{
 
+      getKinds(){
+        let connect = new Connect()
+        axios.post(connect.host + connect.ip.Ekinds,{
+        }).then(resp=>{
+          if(resp.data.status){
+            this.kindsTotal = resp.data.total
+            this.kinds.push(resp.data.data)
+          }
+        },resp => {
+        })
+      },
       queryKinddsSearch(queryString, cb) {
         let kinds = this.kinds;
         let results = queryString ? kinds.filter(this.createKindsFilter(queryString)) : kinds;
@@ -123,7 +129,7 @@ export default {
             return;
           }
 
-          postRequest(connect.host + this.deleteKinds,
+          axios.post(connect.host + this.deleteEKinds,
           para).then(resp=>{
 
             if(resp.data.status){

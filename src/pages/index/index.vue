@@ -19,16 +19,6 @@ export default {
     name: 'index',
     components: { myHeader, mySide },
     created:function(){
-        // var connect = new Connect()
-        // var data = connect.getKindsRequest()
-        // if(data.status === false){
-        //     console.log(data.message)
-        // }else{
-        //     this.$store.dispatch('set_kinds',data.data)
-        // }
-        // this.$store.dispatch('set_kinds','sdfsdf')
-        // this.$store.commit('set_kinds',['1','2','3'])
-        this.$store.commit('set_RealBook',['00001','玄幻'])
     }
 
 }

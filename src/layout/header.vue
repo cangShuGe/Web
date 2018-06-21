@@ -86,6 +86,7 @@
     </el-header>
 </template>
 <script>
+import axios from "axios"
 import { mapState } from 'vuex'
 import Connect from '@/services/service'
 import { postRequest,putRequest,getRequest } from '@/utils/api'
@@ -124,7 +125,7 @@ export default {
         ])
     },
     created:function(){
-     
+
     },
     watch: {
         $route() {
@@ -169,15 +170,10 @@ export default {
             pwd:this.form.password
           }
             this.setfalse()
-            // this.$http.get("http://10.236.95.106:8888/userLogin",{params:param}).then(res =>{
-            //   console.log(res)
-            // },res=>{
-            //   console.log(res)
-            // })
+
             let connect = new Connect()
             connect.loginRequest(this.form)
-            // console.log(this.form)
-            // console
+
         },
         verify(){
             // 登录信息验证
@@ -195,7 +191,27 @@ export default {
         register(){
             this.setfalse()
             let connect = new Connect()
-
+            this.$http.post(connect.host + connect.ip.register,{
+              account:this.registerfrom.username,
+              pwd:this.registerfrom.password,
+              mailbox:this.registerfrom.email,
+              member:0,
+              address:'sdfasd',
+              credit:0,
+              name:'',
+              sex:'',
+              birthday:0,
+            }).then(resp=>{
+              if(resp.data.status){
+                this.$message.success('注册成功')
+              }
+            },resp=>{
+              if(typeof(resp.data) === undefined || resp.data === null ){
+                this.$message.error('网络连接失败')
+              }else{
+                this.$message.error('注册失败')
+              }
+            })
         },
         verifyRegister(){
             //注册信息验证

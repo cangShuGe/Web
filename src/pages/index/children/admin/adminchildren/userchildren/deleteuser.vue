@@ -46,6 +46,7 @@
     </div>
 </template>
 <script>
+import axios from "axios"
 import { postRequest,putRequest,getRequest } from '@/utils/api'
 import Connect from '@/services/service'
 export default {
@@ -71,7 +72,7 @@ export default {
 
           let connect = new Connect()
 
-          postRequest(connect.host + connect.accountDelete,
+          axios.post(connect.host + connect.ip.accountDelete,
           this.formAccount).then(resp=>{
 
             if(resp.data.status){
@@ -97,7 +98,7 @@ export default {
 
           let connect = new Connect()
 
-          postRequest(connect.host + connect.emaiDelete,
+          axios.post(connect.host + connect.ip.emaiDelete,
           this.formEmail).then(resp=>{
 
             if(resp.data.status){

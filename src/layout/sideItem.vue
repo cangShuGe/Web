@@ -8,8 +8,8 @@
                 <!-- <el-menu-item-group > -->
                     <div>
                         <!-- <router-link  :to="{name:path}" > -->
-                            <el-menu-item v-for="(name,id,index) in kinds" :key="index" :index="'1'+'-' + index" @click="choseRealBook(name,id)">
-                            {{name}}
+                            <el-menu-item v-for="(item,index) in Kinds" :key="index" :index="'1'+'-' + index" @click="choseRealBook(item.catalogno,item.catalogname)">
+                            {{item.catalogname}}
                             </el-menu-item>
                         <!-- </router-link> -->
                     </div>
@@ -20,9 +20,9 @@
             </el-menu-item>
             <el-submenu index="3">
               <span slot="title">电子书</span>
-                <div v-for="(name,id,index) in kinds" :key="index">
-                <el-menu-item :index="'120'+'-' + index" @click="choseBook(id,name)">
-                    {{name}}
+                <div v-for="(item,index) in Ekinds" :key="index">
+                <el-menu-item :index="'120'+'-' + index" @click="choseBook(item.catalogno,item.catalogname)">
+                    {{item.catalogname}}
                 </el-menu-item>
                 </div>
             </el-submenu>
@@ -30,31 +30,66 @@
     </div>
 </template>
 <script>
+import axios from "axios"
+import { postRequest,putRequest,getRequest } from '@/utils/api'
+import Connect from '@/services/service'
 import { mapState } from 'vuex'
 export default {
     name: 'menuItem',
     data(){
         return {
-
+          Kinds:[
+            {catalogname:'玄幻',catalogno:'12'},
+            {catalogname:'修真',catalogno:'13'},
+            {catalogname:'历史',catalogno:'14'},
+          ],
+          Ekinds:[
+            {catalogname:'玄幻',catalogno:'22'},
+            {catalogname:'修真',catalogno:'23'},
+            {catalogname:'历史',catalogno:'24'},
+          ],
+          ekindsTotal:1
         };
     },
     props: {
         json: Array
     },
     created:function(){
-        // this.$store.dispatch('set_kinds',['1','2','3','4'])
-        // alert(kinds)
-        // window.alert('sdfsdf')
+        // for(var i = 1; i <= (this.kindsTotal)/10 + 1;i++){
+          this.getKinds()
+        // }
+        for(var i = 1; i <= this.ekindsTotal;i++){
+          this.getEKinds(i)
+        }
     },
     computed: {
         ...mapState([
-            'user',
-            'logs',
-            'useronline',
-            'kinds'
         ])
     },
     methods: {
+      getEKinds(index){
+        let connect = new Connect()
+        axios.post(connect.host + connect.ip.Ekinds,{
+          pageNum:index
+        }).then(resp=>{
+          if(resp.data.status){
+            this.ekindsTotal = resp.data.total
+            this.Ekinds.push(resp.data.data)
+          }
+        },resp => {
+        })
+      },
+      getKinds(index){
+        let connect = new Connect()
+        axios.post(connect.host + connect.ip.kinds,{
+        }).then(resp=>{
+          if(resp.data.status){
+            this.kindsTotal = resp.data.total
+            this.Kinds.push(resp.data.data)
+          }
+        },resp => {
+        })
+      },
         routeName(route) {
             if (route.meta && route.meta.title) {
                 return route.meta.title
@@ -67,13 +102,13 @@ export default {
         },
         choseBook(id,name){
             let ebook = new Array(id,name)
-            this.$store.commit('set_Ebook',ebook)
-            this.$router.push({path:'/index/ebook/'+name})
+            console.log(id + name)
+            this.$router.push({path:'/index/ebook/'+id})
         },
-        choseRealBook(name,id){
+        choseRealBook(id,name){
             let real = new Array(id,name)
-            this.$store.commit('set_RealBook',real)
-            this.$router.push({path:'/index/realbook/'+name})
+            console.log(id + name)
+            this.$router.push({path:'/index/realbook/'+id})
         }
     }
 }

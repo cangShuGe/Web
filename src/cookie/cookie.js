@@ -14,6 +14,6 @@ export default {
   removeall:function(){
     Cookies.remove('useronline')
     Cookies.remove('user')
-    Cookie
+    // Cookie
   }
 }

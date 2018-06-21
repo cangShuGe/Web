@@ -70,6 +70,7 @@
     </div>
 </template>
 <script>
+import axios from "axios"
 import { postRequest,putRequest,getRequest } from '@/utils/api'
 import Connect from '@/services/service'
 export default {
@@ -107,30 +108,43 @@ export default {
 {bookno:'1',  bookname:'高级程序语言设计',catalogno: '1', author:'张小东', publishTime:'20100510', press:'哈尔滨工业大学出版社', total:26, price:100,resume: '本书是计算机学生的入门必读书籍，是学习计算机的开始教程！',url: ''},
 
           ],
+          allTotal:1,
+          kindsTotal:1,
         }
     },
     created:function(){
-      let connect = new Connect()
-      postRequest(connect.host + connect.ip.kinds,{
-
-      }).then(resp=>{
-        if(resp.data.status){
-          this.kinds = resp.data.data
-
-        }
-      },resp => {
-
-      })
-      postRequest(connect.host + connect.ip.allBooks,{
-
-      }).then(resp=>{
-        if(resp.data.status){
-          this.all = resp.data.data
-        }
-      },resp => {
-      })
+      // for(var i = 1; i <= kindsTotal;i++){
+        this.getKinds()
+      // }
+      for(var i = 1; i <= allTotal;i++){
+        this.getBook(i)
+      }
     },
     methods:{
+      getKinds(){
+        let connect = new Connect()
+        axios.post(connect.host + connect.ip.kinds,{
+          // pageNum:index
+        }).then(resp=>{
+          if(resp.data.status){
+            this.kindsTotal = resp.data.total
+            this.kinds.push(resp.data.data)
+          }
+          },resp => {
+        })
+      },
+      getBook(index){
+        let connect = new Connect()
+        axios.post(connect.host + connect.ip.allBooks,{
+          pageNum:index
+        }).then(resp=>{
+          if(resp.data.status){
+          this.allTotal = resp.data.total
+            this.all.push(resp.data.data)
+          }
+        },resp => {
+        })
+      },
       queryIDSearch(queryString, cb) {
         let all = this.all;
         let results = queryString ? all.filter(this.createIDFilter(queryString)) : all;
@@ -204,7 +218,7 @@ export default {
             para['total'] == this.form.total
           }
           let connect = new Connect()
-          postRequest(connect.host + connect.ip.updateBook,
+          axios.post(connect.host + connect.ip.updateBook,
           para).then(resp=>{
 
             if(resp.data.status){

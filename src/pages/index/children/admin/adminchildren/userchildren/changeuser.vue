@@ -23,6 +23,7 @@
     </div>
 </template>
 <script>
+import axios from "axios"
 import { postRequest,putRequest,getRequest } from '@/utils/api'
 import Connect from '@/services/service'
 export default {
@@ -47,7 +48,7 @@ export default {
           }
           let connect = new Connect()
 
-          postRequest(connect.host + connect.ip.changeMail,
+          axios.post(connect.host + connect.ip.changeMail,
           this.formName).then(resp =>{
             if(resp.data.status){
               this.$message.alert('修改邮箱成功')
@@ -59,8 +60,6 @@ export default {
               this.$message.error('修改失败！')
             }
           })
-
-
         }).catch(_=>{
 
         })

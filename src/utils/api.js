@@ -1,84 +1,91 @@
+import axios from "axios";
 
-import axios from 'axios'
-
-let base = '';
-// base = process.env.api.host;
-// var instance = axios.create({
-//   baseURL:"https://www.baidu.com/",
-//   timeout:1000,
-//   headers: {'X-Custom-Header':'foobar'}
-// });
+let base = "";
+//base = process.env.api.host;
+var instance = axios.create({
+  baseURL: "https://www.baidu.com/",
+  timeout: 1000,
+  headers: { "X-Custom-Header": "foobar" }
+});
 export const postRequest = (url, params) => {
   return axios({
-    method: 'post',
+    method: "post",
     url: `${base}${url}`,
-    data: params,
-    transformRequest: [function (data) {
-      // Do whatever you want to transform the data
-      let ret = ''
-      for (let it in data) {
-        ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+    data: JSON.stringify(params),
+    transformRequest: [
+      function(data) {
+        // Do whatever you want to transform the data
+        let ret = data;
+        // for (let it in data) {
+        //   ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        // }
+        return ret;
       }
-      return ret
-    }],
+    ],
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      "Content-Type": "application/x-www-form-urlencoded"
     }
   });
-}
+};
 export const uploadFileRequest = (url, params) => {
   return axios({
-    method: 'post',
+    method: "post",
     url: `${base}${url}`,
     data: params,
     headers: {
-      'Content-Type': 'multipart/form-data'
+      "Content-Type": "multipart/form-data"
     }
   });
-}
+};
 export const putRequest = (url, params) => {
   return axios({
-    method: 'put',
+    method: "put",
     url: `${base}${url}`,
     data: params,
-    transformRequest: [function (data) {
-      let ret = ''
-      for (let it in data) {
-        ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+    transformRequest: [
+      function(data) {
+        let ret = "";
+        for (let it in data) {
+          ret +=
+            encodeURIComponent(it) + "=" + encodeURIComponent(data[it]) + "&";
+        }
+        return ret;
       }
-      return ret
-    }],
+    ],
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      "Content-Type": "application/x-www-form-urlencoded"
     }
   });
-}
-export const deleteRequest = (url) => {
+};
+export const deleteRequest = url => {
   return axios({
-    method: 'delete',
+    method: "delete",
     url: `${base}${url}`
   });
-}
-export const getRequest = (url,params) => {
+};
+export const getRequest = (url, params) => {
   // return axios#get(url);
   return axios({
-    method: 'get',
-    changeOrigin:true,//允许跨域
-    data:params,
-    transformRequest: [function (data) {
-      let ret = ''
-      for (let it in data) {
-        ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+    method: "get",
+    changeOrigin: true, //允许跨域
+    data: params,
+    transformRequest: [
+      function(data) {
+        let ret;
+        for (let it in data) {
+          ret +=
+            encodeURIComponent(it) + "=" + encodeURIComponent(data[it]) + "&";
+        }
+        return ret;
       }
-      return ret
-    }],
+    ],
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      "Content-Type": "application/x-www-form-urlencoded",
       // 'Access-Control-Allow-Headers':'Content-Type,Content-Length, Authorization,\'Origin\',Accept,X-Requested-With',
       // 'Access-Control-Allow-Credentials':true,
       // 'Access-Control-Allow-Methods':'GET, POST, OPTIONS, PUT, PATCH, DELETE',
-      'Access-Control-Allow-Origin':'*'
+      "Access-Control-Allow-Origin": "*"
     },
     url: `${base}${url}`
   });
-}
+};

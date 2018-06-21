@@ -4,23 +4,23 @@
         <el-row :gutter="15"><!--列和列之间的间距--> <!--一行但是有很多列-->
             <el-col :span="12">
                 <div class="grid-content bg-purple">
-                    <img src="@/assets/img/linghundemuchang.jpg" alt="书籍封面">
+                    <img :src="formBook.url" alt="书籍封面">
                 </div>
             </el-col>
             <el-col :span="12">
                 <div class="grid-content bg-purple">
-                    <el-form ref="form" label-width="80px">
+                    <el-form :model="formBook" label-width="80px">
                         <el-form-item label="书籍名称">
-                            <el-tag>灵魂的牧场</el-tag>
+                            <el-tag>{{formBook.bookname}}</el-tag>
                         </el-form-item>
                         <el-form-item label="作者">
-                            <el-tag type="success">倪道辉</el-tag>
+                            <el-tag type="success">{{formBook.author}}</el-tag>
                         </el-form-item>
                         <el-form-item label="出版社">
-                            <el-tag type="info">大象文化出版社</el-tag>
+                            <el-tag type="info">{{formBook.press}}</el-tag>
                         </el-form-item>
                         <el-form-item label="出版时间">
-                            <el-tag type="info">2016-12-23 12:31:33</el-tag>
+                            <el-tag type="info">{{formBook.publishTime.toString()}}</el-tag>
                         </el-form-item>
                         <el-form-item label="抵押金币">
                             <el-switch v-model="form.discord"></el-switch>
@@ -55,12 +55,16 @@
     <div> --><!--展示这本书籍的所有评论以及评分-->
     </div>
     <div class="comment" style="padding: 100px;">
-      <my-comment></my-comment>
+      <my-comment :id="id"></my-comment>
     </div>
   </div>
 </template>
 <script>
-  import myComment from './bookcomment'
+import axios from "axios"
+import myHeader from '@/layout/header'
+import { mapState } from 'vuex'
+import Connect from '@/services/service'
+import myComment from './bookcomment'
 export default {
     name: 'bookbody',
     components:{myComment},
@@ -82,15 +86,88 @@ export default {
           value: 'label',
           children: 'cities'
         },
+        formBook:{
+          bookname:'asdffasdfsdfsdf',
+          author:'',
+          press:'',
+          publishTime:new Date(),
+          url:'sdfsad'
+        },
+        id:this.$route.params.bookid
       }
     },
+    computed: {
+        ...mapState([
+            'user',
+            'logs',
+            'useronline',
+            'user',
+            'userName'
+        ])
+    },
+    created:function(){
+      this.getBook()
+    },
     methods: {
+
+      getBook(){
+        let connect = new Connect()
+        axios.post(connect.host+connect.ip.getBookByNo + '?bookno='
+        +this.id,{
+        }).then(resp=>{
+          console.log(resp)
+          this.formBook = resp.data.data
+          this.formBook.publishTime = new Date(this.formBook.publishTime)
+        },resp=>{
+            if(!resp.data){
+              this.$message.error('网络连接失败')
+            }else{
+              this.$message.error(resp.data.message)
+            }
+        })
+      },
       onSubmit() {
         console.log('submit!');
-        this.$router.push({path:'/index/book'})
+        if(this.useronline){
+        let connect = new Connect()
+        axios.get(connect.host+connect.ip.buyBookNow + '?bookno='+this.id + '&num=' + this.form.num1 + '&buyTime=' + new Date().getTime() + '&account=' + this.user.userName ,{
+        }).then(resp=>{
+          this.$message.success(resp.data.message)
+        },resp=>{
+            if(!resp.data){
+              this.$message.error('网络连接失败')
+            }else{
+              this.$message.error(resp.data.message)
+            }
+        })
+          this.$router.push({path:'/index/book'})
+        }else{
+          this.$message.error('请您先登录账号')
+        }
       },
       toCart(){
         console.log('我要去购物车了哎！hhhhhh')
+        if(this.useronline){
+          let connect = new Connect()
+        axios.post(connect.host+connect.ip.addSaleCar ,{
+          account:this.user.userName,
+          bookno:this.id,
+          addtime:new Date().getTime(),
+          num:this.form.num1
+        }).then(resp=>{
+          this.$message.success(resp.data.message)
+        },resp=>{
+            if(!resp.data){
+              this.$message.error('网络连接失败')
+            }else{
+              this.$message.error(resp.data.message)
+            }
+        })
+          this.$router.push({path:'/index/book'})
+          this.$router.push({path:'/index/book'})
+        }else{
+          this.$message.error('请您先登录账号')
+        }
       },
       handleItemChange(val) {
         console.log('active item:', val);

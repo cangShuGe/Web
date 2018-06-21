@@ -21,6 +21,7 @@
     </div>
 </template>
 <script>
+import axios from "axios"
 import { postRequest,putRequest,getRequest } from '@/utils/api'
 import Connect from '@/services/service'
 export default {
@@ -32,28 +33,10 @@ export default {
             catalogno:'',
             catalogname:'',
           },
-          kinds:[
-            {catalogno:'123123',catalogname:'asdfasdfasdf'},
-            {catalogno:'123123',catalogname:'asdfasdfasdf'},
-            {catalogno:'123123',catalogname:'asdfasdfasdf'},
-            {catalogno:'123123',catalogname:'asdfasdfasdf'},
-            {catalogno:'123123',catalogname:'asdfasdfasdf'},
-            {catalogno:'123123',catalogname:'asdfasdfasdf'},
-            {catalogno:'123123',catalogname:'asdfasdfasdf'},
-          ]
         }
     },
     created:function(){
-      let connect = new Connect()
-      postRequest(connect.host + connect.ip.kinds,{
 
-      }).then(resp=>{
-        if(resp.data.status){
-          this.kinds = resp.data.data
-        }
-      },resp => {
-
-      })
     },
     methods:{
 
@@ -75,7 +58,7 @@ export default {
           return;
         }
 
-        postRequest(connect.host + this.addKinds,
+        axios.post(connect.host + this.addKinds,
         para).then(resp=>{
 
           if(resp.data.status){

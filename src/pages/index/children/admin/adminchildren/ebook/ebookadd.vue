@@ -34,7 +34,16 @@
           <el-input v-model="form.resume" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="选择图片">
-          <el-button type="primary" @click="dialogVisible = true">点击选择图片</el-button>
+          <!-- <el-button type="primary" @click="dialogVisible = true">点击选择图片</el-button> -->
+          <el-upload
+            class="avatar-uploader"
+            :action= domain
+            :http-request = upqiniu
+            :show-file-list="false"
+            :before-upload="beforeUpload">
+            <img v-if="form.url" :src="form.url" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
         </el-form-item>
         <el-form-item>
           <el-input type="submit" value="增加"></el-input>
@@ -44,28 +53,10 @@
         </el-col>
       </el-row>
 
-    <el-dialog
-      title="选择图片"
-      :visible.sync="dialogVisible"
-      width="30%">
-      <el-upload
-        class="avatar-uploader"
-        action="https://jsonplaceholder.typicode.com/posts/"
-        :show-file-list="false"
-        :on-success="handleAvatarSuccess"
-        :before-upload="beforeAvatarUpload">
-        <!-- <img v-if="imageUrl" :src="imageUrl" class="avatar"> -->
-        <i class="el-icon-plus avatar-uploader-icon"></i>
-      </el-upload>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
-    </el-dialog>
-
     </div>
 </template>
 <script>
+import axios from "axios"
 import { postRequest,putRequest,getRequest } from '@/utils/api'
 import Connect from '@/services/service'
 export default {
@@ -93,22 +84,74 @@ export default {
             {catalogno:'123123',catalogname:'asdfasdfasdf'},
             {catalogno:'123123',catalogname:'asdfasdfasdf'},
             {catalogno:'123123',catalogname:'asdfasdfasdf'},
-          ]
+          ],
+          kindsTotal:0,
+          token: {},
+          // 七牛云的上传地址，根据自己所在地区选择，我这里是华南区
+          domain: 'https://up.qiniup.com',
+          // 这是七牛云空间的外链默认域名
+          qiniuaddr: 'pak69l11h.bkt.clouddn.com',
         }
     },
     created:function(){
-      let connect = new Connect()
-      postRequest(connect.host + connect.ip.Ekinds,{
 
-      }).then(resp=>{
-        if(resp.data.status){
-          this.kinds = resp.data.data
-        }
-      },resp => {
-
-      })
+      // for(var i = 1; i <= kindsTotal;i++){
+        this.getKinds()
+      // }
     },
     methods:{
+      getKinds(){
+        let connect = new Connect()
+        axios.post(connect.host + connect.ip.Ekinds,{
+          // page:index
+        }).then(resp=>{
+          if(resp.data.status){
+            this.kindsTotal = resp.data.total
+            this.kinds.push(resp.data.data)
+          }
+        },resp => {
+        })
+      },
+      upqiniu (req) {
+      console.log(req)
+      console.log('req')
+      const config = {
+        headers: {'Content-Type': 'multipart/form-data'}
+      }
+      let filetype = ''
+      if (req.file.type === 'image/png') {
+        filetype = 'png'
+      } else {
+        filetype = 'jpg'
+      }
+      // 重命名要上传的文件
+      const keyname = 'wu' + new Date().getTime() + '.' + filetype
+      // 从后端获取上传凭证token
+      this.axios.get('/up/token').then(res => {
+        // console.log(res)
+        const formdata = new FormData()
+        formdata.append('file', req.file)
+        formdata.append('token', res.data)
+        formdata.append('key', keyname)
+        // 获取到凭证之后再将文件上传到七牛云空间
+        this.axios.post(this.domain, formdata, config).then(res => {
+          this.form.url = 'http://' + this.qiniuaddr + '/' + res.data.key
+          console.log(this.form.url)
+        })
+      })
+    },
+    // 验证文件合法性
+    beforeUpload (file) {
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 2
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
       queryKinddsSearch(queryString, cb) {
         let kinds = this.kinds;
         let results = queryString ? kinds.filter(this.createKindsFilter(queryString)) : kinds;
@@ -170,7 +213,7 @@ export default {
           para['url'] = this.form.url
         }
 
-        postRequest(connect.host + connect.ip.addEBook,
+        axios.post(connect.host + connect.ip.addEBook,
         para).then(resp=>{
 
           if(resp.data.status){

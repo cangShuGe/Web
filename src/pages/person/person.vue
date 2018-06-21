@@ -119,13 +119,13 @@
                 :data="saleMessage"
                 style="width: 100%">
                     <el-table-column
-                        prop="date"
+                        prop="buyTime1"
                         fixed
                         label="日期"
                         width="90">
                     </el-table-column>
                     <el-table-column
-                        prop="name"
+                        prop="bookname"
                         label="书籍名称"
                         width="300">
                     </el-table-column>
@@ -135,16 +135,21 @@
                       prop="author">
                     </el-table-column>
                     <el-table-column
+                      label="单价"
+                      width="180"
+                      prop="price">
+                    </el-table-column>
+                    <el-table-column
                         width="80"
                         prop="num"
                         label="购买数量">
                     </el-table-column>
                     <el-table-column
                         width="222"
-                        prop="remark"
+                        prop="score"
                         label="评分">
                         <template slot-scope="scope">
-                          <div v-if="scope.row.remark === null || scope.row.remark === ''">
+                          <div v-if="scope.row.score === null || scope.row.score === 0">
                             <span type="text">请评价</span>
                             <el-select style="width:70px" v-model="value[scope.$index]" placeholder="请选择分数">
                               <el-option
@@ -157,7 +162,7 @@
                             <!-- <br /><br /> -->
                             <el-button type="success" round  size="small" @click="remark(scope.$index,scope.row)">提交评价</el-button>
                           </div>
-                          <span v-else>{{scope.row.remark}}</span>
+                          <span v-else>{{scope.row.score}}</span>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -196,33 +201,6 @@
                 label="书籍名称"
                 prop="bookname">
               </el-table-column>
-              <el-table-column type="expand">
-                <template slot-scope="props">
-                  <el-form label-position="left" inline class="demo-table-expand">
-                    <el-form-item label="书籍名称">
-                      <span>{{ props.row.bookname }}</span>
-                    </el-form-item>
-                    <el-form-item label="书籍作者">
-                      <span>{{ props.row.author }}</span>
-                    </el-form-item>
-                    <el-form-item label="书籍简介">
-                      <span>{{ props.row.resume }}</span>
-                    </el-form-item>
-                    <el-form-item label="书籍分类">
-                      <span>{{ props.row.kind }}</span>
-                    </el-form-item>
-                    <el-form-item label="出版时间">
-                      <span>{{ props.row.publishTime }}</span>
-                    </el-form-item>
-                    <el-form-item label="出版社">
-                      <span>{{ props.row.press }}</span>
-                    </el-form-item>
-                    <el-form-item label="书籍价格">
-                      <span>{{ props.row.jiage }}</span>
-                    </el-form-item>
-                  </el-form>
-                </template>
-              </el-table-column>
               <el-table-column
                 label="书籍作者"
                 width="180"
@@ -234,7 +212,7 @@
                 <template slot-scope="scope">
                   <!-- <el-button type="warning" icon="el-icon-minus" circle></el-button> -->
                   <!-- <el-col type="flex" :span="1" class="row-bg"> -->
-                  <el-input type="number" v-model="scope.row.booknum" :min="1" :max="1000000" class="demo-input-suffix" :value="scope.row.booknum" size="small"></el-input>
+                  <el-input type="number" v-model="scope.row.num" :min="1" :max="1000000" class="demo-input-suffix" :value="scope.row.num" size="small"></el-input>
                   <!-- </el-col> -->
                   <!-- <el-button type="warning" icon="el-icon-plus" circle></el-button> -->
                 </template>
@@ -242,7 +220,12 @@
               <el-table-column
                 label="单价"
                 width="90"
-                prop="jiage">
+                prop="price">
+              </el-table-column>
+              <el-table-column
+                label="书籍简介"
+                width="90"
+                prop="resume">
               </el-table-column>
                 <!-- label="是否购买" -->
                 <!-- width="50" -->
@@ -313,23 +296,23 @@
                 style="width: 100%">
                     <el-table-column
                         fixed
-                        prop="EbookName"
+                        prop="bookname"
                         label="书籍名称"
                         width="300">
                     </el-table-column>
                     <el-table-column
-                      label="来源"
+                      label="作者"
                       width="180"
-                      prop="EbookComefrom">
+                      prop="author">
                     </el-table-column>
                     <el-table-column
                         width="80"
-                        prop="Cost"
+                        prop="price"
                         label="花费积分">
                     </el-table-column>
                     <el-table-column
                         width="210"
-                        prop="EbookResume"
+                        prop="resume"
                         label="简介">
                     </el-table-column>
                     <el-table-column
@@ -365,6 +348,7 @@
     </div>
 </template>
 <script>
+import axios from "axios"
 import myHeader from '@/layout/header'
 import { mapState } from 'vuex'
 import Connect from '@/services/service'
@@ -374,7 +358,7 @@ export default {
     data() {
         return {
           EbookMessage:[
-            {EbookId:'123456789',EbookName:'asdfasdf',EbookComefrom:'sdsdfsdf',Cost:23,EbookResume:'asdsdfsdsfsdfgsdfgsdfgsdfgsdfgsdfgfasdfas'},
+            {EbookId:'123456789',bookname:'asdfasdf',author:'sdsdfsdf',price:23,resume:'asdsdfsdsfsdfgsdfgsdfgsdfgsdfgsdfgfasdfas'},
           ],
           booksum:0,
           moneySum:0,
@@ -391,18 +375,20 @@ export default {
             sex:'男',
             birthday:new Date('Mon Jun 04 2018'),
             member:0,
+            password:'',
             credit:223
           },
+          memeber:0,
           saleMessage:[
-            {date:'2018-1-1',author:'上海市普陀区真北路',name:'asdfsd',num:'12',remark:'sdf',bookno:'123123124'},
-            {date:'2018-1-1',author:'上海市普陀区真北路',name:'asdfsd',num:'12',remark:'',bookno:'123123'},
+            {buyTime:'2018-1-1',buyTime1:'2018-1-1',author:'上海市普陀区真北路',bookname:'asdfsd',num:'12',score:0,bookno:'123123124',price:10},
+            {buyTime:'2018-1-1',buyTime1:'2018-1-1',author:'上海市普陀区真北路',bookname:'asdfsd',num:'12',score:0,bookno:'123123',price:10},
           ],
           saleCar:[
-            {bookno:'12987122',bookname:'好滋好味鸡蛋仔',catalogno:'江浙小吃、小吃零食',kind:'荷兰优质淡奶，奶香浓而不腻',author:'上海市普陀区真北路',publishTime:'王小虎夫妻店',press:'10333',resume:'sdfasdf',url:'sdfsadfas',booknum:3,jiage:4},
-            {bookno:'12987122',bookname:'好滋好味鸡蛋仔',catalogno:'江浙小吃、小吃零食',kind:'荷兰优质淡奶，奶香浓而不腻',author:'上海市普陀区真北路',publishTime:'王小虎夫妻店',press:'10333',resume:'sdfasdf',url:'sdfsadfas',booknum:3,jiage:4},
-            {bookno:'12987122',bookname:'好滋好味鸡蛋仔',catalogno:'江浙小吃、小吃零食',kind:'荷兰优质淡奶，奶香浓而不腻',author:'上海市普陀区真北路',publishTime:'王小虎夫妻店',press:'10333',resume:'sdfasdf',url:'sdfsadfas',booknum:3,jiage:4},
-            {bookno:'12987122',bookname:'好滋好味鸡蛋仔',catalogno:'江浙小吃、小吃零食',kind:'荷兰优质淡奶，奶香浓而不腻',author:'上海市普陀区真北路',publishTime:'王小虎夫妻店',press:'10333',resume:'sdfasdf',url:'sdfsadfas',booknum:3,jiage:4},
-            {bookno:'12987122',bookname:'好滋好味鸡蛋仔',catalogno:'江浙小吃、小吃零食',kind:'荷兰优质淡奶，奶香浓而不腻',author:'上海市普陀区真北路',publishTime:'王小虎夫妻店',press:'10333',resume:'sdfasdf',url:'sdfsadfas',booknum:3,jiage:4}
+            {bookno:'12987122',bookname:'好滋好味鸡蛋仔',catalogno:'江浙小吃、小吃零食',kind:'荷兰优质淡奶，奶香浓而不腻',author:'上海市普陀区真北路',publishTime:'王小虎夫妻店',press:'10333',resume:'sdfasdf',url:'sdfsadfas',num:3,price:4},
+            {bookno:'12987122',bookname:'好滋好味鸡蛋仔',catalogno:'江浙小吃、小吃零食',kind:'荷兰优质淡奶，奶香浓而不腻',author:'上海市普陀区真北路',publishTime:'王小虎夫妻店',press:'10333',resume:'sdfasdf',url:'sdfsadfas',num:3,price:4},
+            {bookno:'12987122',bookname:'好滋好味鸡蛋仔',catalogno:'江浙小吃、小吃零食',kind:'荷兰优质淡奶，奶香浓而不腻',author:'上海市普陀区真北路',publishTime:'王小虎夫妻店',press:'10333',resume:'sdfasdf',url:'sdfsadfas',num:3,price:4},
+            {bookno:'12987122',bookname:'好滋好味鸡蛋仔',catalogno:'江浙小吃、小吃零食',kind:'荷兰优质淡奶，奶香浓而不腻',author:'上海市普陀区真北路',publishTime:'王小虎夫妻店',press:'10333',resume:'sdfasdf',url:'sdfsadfas',num:3,price:4},
+            {bookno:'12987122',bookname:'好滋好味鸡蛋仔',catalogno:'江浙小吃、小吃零食',kind:'荷兰优质淡奶，奶香浓而不腻',author:'上海市普陀区真北路',publishTime:'王小虎夫妻店',press:'10333',resume:'sdfasdf',url:'sdfsadfas',num:3,price:4}
           ],
           bookkinds:[{
             id:'',
@@ -422,31 +408,7 @@ export default {
         ])
     },
     created:function(){
-
-      let connect = new Connect()
-      postRequest(connect.host + connect.ip.personMessage,{
-        account:this.userName
-      }).then(resp=>{
-        let message = resp.data.data
-        let usermessage ={
-          userName:message.account,
-          email:message.mailbox,
-          member:message.member,
-          credit:message.credit,
-          name:message.name,
-          sex:message.sex,
-          birthday:new Date(message.birthday)
-        }
-
-
-
-        console.log(message)
-        console.log(usermessage)
-        cookie.setToken('user',usermessage)
-        router.go(0)
-      },resp=>{
-
-      })
+      console.log(this.user)
       this.formInline.username = this.user.userName
       this.formInline.userId = this.user.userId
       this.formInline.birthday = new Date(this.user.birthday)
@@ -454,16 +416,101 @@ export default {
       this.formInline.email = this.user.email
       this.formInline.member = this.user.member
       this.formInline.credit = this.user.credit
+      this.formInline.password = this.user.password
+      console.log(this.formInline.birthday)
+      this.member = this.formInline.member
       if(this.formInline.member === 0){
         this.formInline.member = '您还不是会员'
       }else{
         this.formInline.member = this.formInline.member + '级会员'
       }
+      this.showRecord()
+      this.showMyEbook()
+
+      this.showMySaleCar(1)
     },
     methods:{
-      downloadEbook(index,row){
+      showMySaleCar(index){
+
+        let connect = new Connect()
+        axios.post(connect.host+connect.ip.showSaleCar + '?account='
+        +this.user.userName+'&pageNum=' + index +'&pageSize=' + 10,{
+
+        }).then(resp=>{
+          console.log(resp)
+          if(index < resp.data.total){
+            this.showMySaleCar(index+1)
+          }
+          if(index === 1){
+            this.saleCar = resp.data.data
+          }
+          else{
+
+            this.saleCar.push(resp.data.data)
+          }
+          console.log(this.saleCar)
+        },resp=>{
+            if(!resp.data){
+              this.$message.error('网络连接失败')
+            }else{
+              this.$message.error(resp.data.message)
+            }
+        })
+
+      },
+      showMyEbook(){
+        let connect = new Connect()
+        axios.post(connect.host+connect.ip.showMyEbook + '?account='+this.user.userName,{
+
+        }).then(resp=>{
+          console.log(resp.data.data)
+          this.EbookMessage = resp.data.data
+        },resp=>{
+            if(!resp.data){
+              this.$message.error('网络连接失败')
+            }else{
+              this.$message.error(resp.data.message)
+            }
+        })
+      },
+      showSaleCar(index){
+        let connect = new Connect()
+        axios.post(connect.host+connect.ip.showSaleCar + '?account='+this.user.userName,{
+
+        }).then(resp=>{
+          console.log(resp.data.data)
+          this.saleMessage = resp.data.data
+        },resp=>{
+            if(!resp.data){
+              this.$message.error('网络连接失败')
+            }else{
+              this.$message.error(resp.data.message)
+            }
+        })
+      },
+      showRecord(){
         let connect = new Connect()
 
+        axios.post(connect.host+connect.ip.showMyBuy + '?account='+this.user.userName,{
+
+        }).then(resp=>{
+          console.log(resp.data.data)
+          this.saleMessage = resp.data.data
+          for(var i=0;i<this.saleMessage.length;i++){
+            console.log(this.saleMessage[i].buyTime)
+            this.saleMessage[i]['buyTime1'] = new Date(this.saleMessage[i].buyTime).toDateString()
+            console.log(this.saleMessage[i].buyTime)
+          }
+        },resp=>{
+            if(!resp.data){
+              this.$message.error('网络连接失败')
+            }else{
+              this.$message.error(resp.data.message)
+            }
+        })
+      },
+      downloadEbook(index,row){
+        let connect = new Connect()
         this.formInline.email = connect.downloadEbook()
       },
       sumMoney(){
@@ -474,14 +521,32 @@ export default {
           this.moneySum = 0
           this.booksum = 0
           this.choiceChose.forEach((row)=>{
-            this.booksum += row.booknum
-            this.moneySum += row.booknum * row.jiage
+            this.booksum += row.num
+            this.moneySum += row.num * row.price
           })
         }
       },
       buyAll(){
         this.$confirm('确定要购买所选商品吗？').then(_=>{
           //购买商品
+
+          let connect = new Connect()
+          let num = this.choiceChose.length
+          for(var i = 0;i<this.choiceChose.length;i++ ){
+            axios.post(connect.host+connect.ip.buySaleCar + '?account='+this.user.userName+'&buyTime='+new Date() .getTime()+'&num='+this.choiceChose[i].num+'&bookno='+this.choiceChose[i].bookno + '&addtime=' + this.choiceChose[i].addtime,{
+
+        }).then(resp=>{
+          if(num === (i + 1)){
+            this.$message.error('购买成功! 请等待快递')
+          }
+        },resp=>{
+            if(!resp.data){
+              this.$message.error('网络连接失败')
+            }else{
+              this.$message.error(resp.data.message)
+            }
+        })
+          }
         }).catch(_=>{
           //取消购买商品不进行任何操作
         })
@@ -494,8 +559,28 @@ export default {
       },
       deleteRow() {
         this.$confirm('确定要删除所选商品吗？').then(_=>{
-          let connect = new Connect()
           //删除所选商品
+          console.log('删除' + this.choiceChose.length)
+          console.log(this.choiceChose)
+          let num = this.choiceChose.length
+          for(var i = 0;i<this.choiceChose.length;i++ ){
+            console.log('jinru' + i)
+            let connect = new Connect()
+            axios.post(connect.host+connect.ip.deleteSaleCar + '?account='+this.user.userName+'&bookno='+this.choiceChose[i].bookno + '&addtime=' + this.choiceChose[i].addtime,{
+
+            }).then(resp=>{
+            if(num === (i + 1)){
+              this.$message.error('删除成功!')
+              this.$router.go(0)
+            }
+            },resp=>{
+              if(!resp.data){
+                this.$message.error('网络连接失败')
+              }else{
+              this.$message.error(resp.data.message)
+            }
+          })
+          }
         }).catch(_=>{
           //取消操作，不进行任何操作
         })
@@ -505,13 +590,37 @@ export default {
         this.$confirm('您一年将支付***元，过期如不续费将取消您的会员资格，确认购买？').then(_=>{
           let connect = new Connect()
           //购买会员
+          axios.post(connect.host + connect.ip.buyVip +'?account=' + this.formInline.username,{
+
+          }).then(resp=>{
+          this.$message.success(resp.data.message)
+          },resp=>{
+          if(typeof(resp.data) === undefined || resp.data === null ){
+                this.$message.error('网络连接失败')
+          }else{
+             this.$message.error(resp.data.message)
+          }
+          })
+
         }).catch(_=>{
           //不购买会员，不进任何操作
         })
 
       },
       changePwd(){
-        let connect = new Conncet()
+        let connect = new Connect()
+        // axios.post(connect.host + connect.ip.)
+        axios.post(connect.host + connect.ip.changePwd + '?account='+this.formInline.username+'&pwd=' + this.formChangePwd.oldPwd + '&newPwd='+ this.formChangePwd.newPwd,{
+
+          }).then(resp=>{
+          this.$message.success(resp.data.message)
+        },resp=>{
+          if(typeof(resp.data) === undefined || resp.data === null ){
+                this.$message.error('网络连接失败')
+              }else{
+                this.$message.error(resp.data.message)
+              }
+        })
       },
       verifyPwd(){
         if(!this.formChangePwd.oldPwd || !this.formChangePwd.newPwd || !this.formChangePwd.ensure){
@@ -527,7 +636,27 @@ export default {
       changeMessage(){
         let connect = new Connect()
         //更改个人信息
-        connect.setPersonMessage(this.formInline)
+
+        axios.post(connect.host + connect.ip.updateUser,{
+          account:this.formInline.username,
+              pwd:'12345678',
+              mailbox:this.formInline.email,
+              member:this.member,
+              address:' ',
+              credit:this.formInline.credit,
+              name:' ',
+              sex:this.formInline.sex,
+              birthday:this.formInline.birthday.getTime(),
+        }).then(resp=>{
+          this.$message.success(resp.data.message)
+        },resp=>{
+          if(typeof(resp.data) === undefined || resp.data === null ){
+                this.$message.error('网络连接失败')
+              }else{
+                this.$message.error(resp.data.message)
+              }
+        })
+
       },
       verifyChangeMessage(){
         if(!this.formInline.username){
@@ -541,15 +670,28 @@ export default {
         console.log(this.value)
       },
       filterTag(row,column){
-        if(row.remark === null || row.remark === ''){
+        if(row.score === null || row.score === 0){
           return false
         }
         return true
       },
       remark(index,row){
         this.$confirm('您只能打一次分数，确定要提交吗').then(_=>{
-          row.remark = this.value[index]
+          row.score = this.value[index]
+          let connect = new Connect()
           //评分
+          axios.post(connect.host + connect.ip.userRemark + '?account='+this.formInline.username+'&buyTime=' + row.buyTime + '&bookno='+row.bookno +'&score='+row.score,{
+
+          }).then(resp=>{
+          this.$message.success(resp.data.message)
+          },resp=>{
+          if(typeof(resp.data) === undefined || resp.data === null ){
+                this.$message.error('网络连接失败')
+              }else{
+                this.$message.error(resp.data.message)
+              }
+        })
+
         }).catch(_=>{
 
         })
