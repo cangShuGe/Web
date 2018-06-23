@@ -15,7 +15,7 @@
           >
           <template slot-scope="{ item }">
           <!-- <div class="name">{{ item.bookname }}</div> -->
-          <div class="name" style="color:green">{{ item.value=item.catalogname }}</div>
+          <div class="name" style="color:green">{{ item.value=''+item.catalogname }}</div>
           </template>
           </el-autocomplete>
         </el-form-item>
@@ -29,7 +29,7 @@
           >
           <template slot-scope="{ item }">
           <!-- <div class="name">{{ item.bookname }}</div> -->
-          <div class="name" style="color:green">{{ item.value=item.catalogno }}</div>
+          <div class="name" style="color:green">{{ item.value=''+item.catalogno }}</div>
           </template>
           </el-autocomplete>
         </el-form-item>
@@ -56,24 +56,25 @@ export default {
             catalogname:'',
           },
           kinds:[
+            /*{catalogno:'123123',catalogname:'asdfasdfasdf'},
             {catalogno:'123123',catalogname:'asdfasdfasdf'},
             {catalogno:'123123',catalogname:'asdfasdfasdf'},
             {catalogno:'123123',catalogname:'asdfasdfasdf'},
             {catalogno:'123123',catalogname:'asdfasdfasdf'},
             {catalogno:'123123',catalogname:'asdfasdfasdf'},
-            {catalogno:'123123',catalogname:'asdfasdfasdf'},
-            {catalogno:'123123',catalogname:'asdfasdfasdf'},
+            {catalogno:'123123',catalogname:'asdfasdfasdf'},*/
           ],
           kindsTotal:0,
         }
     },
-    created:function(){
+    created:function(){//初始化
       // for(var i = 1; i <= (kindsTotal)/10 + 1;i++){
         this.getKinds()
+        console.log(this.kinds)
+        console.log("------------------")
       // }
     },
     methods:{
-
       getKinds(){
         let connect = new Connect()
         axios.post(connect.host + connect.ip.kinds,{
@@ -81,8 +82,10 @@ export default {
         }).then(resp=>{
           if(resp.data.status){
             this.kindsTotal = resp.data.total
-            this.kinds.push(resp.data.data)
+            this.kinds=resp.data.data
           }
+          console.log(this.kinds)
+          console.log("--------****----------")
         },resp => {
         })
       },
@@ -109,7 +112,7 @@ export default {
         };
       },
       handleSelect(item) {
-        this.form.catalogno = item.catalogno
+        this.form.catalogno = ''+item.catalogno
         this.form.catalogname = item.catalogname
         console.log(item);
       },
@@ -131,8 +134,7 @@ export default {
             return;
           }
 
-          axios.post(connect.host + this.deleteKinds,
-          para).then(resp=>{
+          axios.post(connect.host + connect.ip.deleteKinds + '?catalogno=' +this.form.catalogno,{}).then(resp=>{
 
             if(resp.data.status){
               this.$message.alert('删除成功')

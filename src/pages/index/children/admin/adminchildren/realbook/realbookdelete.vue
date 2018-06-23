@@ -94,43 +94,38 @@ export default {
 {bookno:'1',  bookname:'高级程序语言设计',catalogno: '1', author:'张小东', publishTime:'20100510', press:'哈尔滨工业大学出版社', total:26, price:100,resume: '本书是计算机学生的入门必读书籍，是学习计算机的开始教程！',url: ''},
 
           ],
-          allTotal:0,
-          kindsTotal:0,
+          allTotal:1,
         }
     },
     created:function(){
-
-      // for(var i = 1; i <= (kindsTotal)/10 + 1;i++){
-        this.getKinds()
-      // }
-      for(var i = 1; i <= allTotal;i++){
+      for(var i = 1; i <= this.allTotal;i++){
         this.getBook(i)
       }
     },
     methods:{
-      getKinds(){
-        let connect = new Connect()
-        axios.post(connect.host + connect.ip.kinds,{
-          // page:index
-        }).then(resp=>{
-          if(resp.data.status){
-            this.kindsTotal = resp.data.total
-            this.kinds.push(resp.data.data)
-          }
-        },resp => {
-        })
-      },
       getBook(index){
         let connect = new Connect()
-        axios.post(connect.host + connect.ip.allBooks,{
-          pageNum:index
-        }).then(resp=>{
-          if(resp.data.status){
-            this.allTotal = resp.data.total
-            this.all.push(resp.data.data)
-          }
-        },resp => {
-        })
+         axios.post(connect.host + connect.ip.allBooks+'?pageNum='+index+'&pageSize=100',{
+            pageNum:this.currentPage,
+            pageSize:8
+          }).then(resp=>{
+            if(index === 1){
+              this.allTotal = resp.data.total
+              this.all=resp.data.data
+              console.log(this.all)
+            }else{
+              this.all.push(resp.data.data)
+            }
+            if(index<this.allTotal){
+              this.getBook(index+1)
+            }
+          },resp => {
+            if(typeof(resp.data)===undefined || resp.data === null){
+              this.$message.error('网络连接错误')
+            }else{
+              this.$message.error(resp.data.message)
+            }
+          })
       },
       queryIDSearch(queryString, cb) {
         let all = this.all;
@@ -146,15 +141,6 @@ export default {
       queryNameSearch(queryString, cb) {
         let all = this.all;
         let results = queryString ? all.filter(this.createNameFilter(queryString)) : all;
-        // console.log(results)
-        // let list = []
-        // for(var item = 0;item < all.length;item++){
-        //   let dic = {}
-        //   dic['value'] = all[item].bookname
-        //   // console.log(dic)
-        //   list.push(dic)
-        // }
-        // 调用 callback 返回建议列表的数据
         cb(results);
       },
       createNameFilter(queryString) {
@@ -188,10 +174,8 @@ export default {
       },
       handleSelect(item) {
         this.form.bookName = item.bookname
-        this.form.bookNo = item.bookno
+        this.form.bookNo = ''+item.bookno
         this.form.author = item.author
-        this.form.total = item.total
-        this.form.price = item.price
         console.log(item);
       },
       DeleteBook(){
@@ -199,16 +183,16 @@ export default {
 
           let connect = new Connect()
           let para = {
-            bookno:this.form.bookNo
+            bookno:Number(this.form.bookNo)
           }
           if(!this.form.bookNo || this.form.bookNo.length === 0){
             this.$message.error('书籍ID为必填字段，请重新填写')
             return;
           }
-          axios.post(connect.host + connect.ip.deleteBook,
+          axios.post(connect.host + connect.ip.deleteBook + '?bookno=' + para.bookno,
           para).then(resp=>{
             if(resp.data.status){
-              this.$message.alert('删除成功！')
+              this.$message.success('删除成功！')
             }
           },resp=>{
             if(typeof(resp.data) !== undefined || resp.data == null){

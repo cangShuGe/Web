@@ -55,7 +55,7 @@
         </el-row>
 
         <el-form-item label="库存:">
-          <el-input v-model="form.total" auto-complete="off"></el-input>
+          <el-input type="number" v-model="form.total" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="价格:">
           <el-input type="number" step="0.01" v-model="form.price" auto-complete="off"></el-input>
@@ -116,7 +116,7 @@ export default {
       // for(var i = 1; i <= kindsTotal;i++){
         this.getKinds()
       // }
-      for(var i = 1; i <= allTotal;i++){
+      for(var i = 1; i <= this.allTotal;i++){
         this.getBook(i)
       }
     },
@@ -131,19 +131,31 @@ export default {
             this.kinds.push(resp.data.data)
           }
           },resp => {
-        })
+          })
       },
       getBook(index){
         let connect = new Connect()
-        axios.post(connect.host + connect.ip.allBooks,{
-          pageNum:index
-        }).then(resp=>{
-          if(resp.data.status){
-          this.allTotal = resp.data.total
-            this.all.push(resp.data.data)
-          }
-        },resp => {
-        })
+         axios.post(connect.host + connect.ip.allBooks+'?pageNum='+index+'&pageSize=100',{
+            pageNum:this.currentPage,
+            pageSize:8
+          }).then(resp=>{
+            if(index === 1){
+              this.allTotal = resp.data.total
+              this.all=resp.data.data
+              console.log(this.all)
+            }else{
+              this.all.push(resp.data.data)
+            }
+            if(index<this.allTotal){
+              this.getBook(index+1)
+            }
+          },resp => {
+            if(typeof(resp.data)===undefined || resp.data === null){
+              this.$message.error('网络连接错误')
+            }else{
+              this.$message.error(resp.data.message)
+            }
+          })
       },
       queryIDSearch(queryString, cb) {
         let all = this.all;
@@ -193,7 +205,7 @@ export default {
       },
       handleSelect(item) {
         this.form.bookName = item.bookname
-        this.form.bookNo = item.bookno
+        this.form.bookNo = ''+item.bookno
         this.form.author = item.author
         this.form.total = item.total
         this.form.price = item.price
@@ -203,7 +215,7 @@ export default {
         this.$confirm('确定要更改书籍信息吗？').then(_=>{
 
           let para = {
-            bookno:this.form.bookNo,
+            bookno:Number(this.form.bookNo),
           }
           if(this.form.price === null){
             this.$message.error('价格和库存为必填字段，请重新填写')
@@ -215,14 +227,15 @@ export default {
             this.$message.error('价格和库存为必填字段，请重新填写')
             return;
           }else{
-            para['total'] == this.form.total
+            console.log(this.form.total)
+            para['total'] = this.form.total
           }
           let connect = new Connect()
-          axios.post(connect.host + connect.ip.updateBook,
+          axios.post(connect.host + connect.ip.updateBook + '?bookno=' + para.bookno+'&price='+para.price + '&total='+para.total,
           para).then(resp=>{
 
             if(resp.data.status){
-              this.$message.alert('更改成功！')
+              this.$message.success('更改成功！')
             }
 
           },resp=>{

@@ -1,7 +1,7 @@
 <template>
     <div id="example">
-        <my-banner :message="Ebook.kind"></my-banner>
-        <my-card></my-card>
+        <my-banner :message="id"></my-banner>
+        <my-card :message="id"></my-card>
     </div>
 </template>
 <script>
@@ -17,7 +17,10 @@ export default {
             'useronline',
             'kinds',
             'Ebook'
-        ])
+        ]),
+        id:function(){
+          return this.$route.params.id
+        }
     },
     components:{myBanner,myCard},
     data() {

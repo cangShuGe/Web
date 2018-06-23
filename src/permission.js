@@ -1,6 +1,9 @@
 import router from '@/router'
 import store from '@/store'
 import cookie from '@/cookie/cookie'
+import axios from "axios"
+import { postRequest, putRequest, getRequest } from '@/utils/api'
+import Connect from '@/services/service'
 
 // 登录验证，权限验证
 router.beforeEach((to, from, next) => {
@@ -20,6 +23,21 @@ router.beforeEach((to, from, next) => {
       store.commit('set_user_online',false)
       store.commit('set_user','')
     }
+    // if(to.$route.params.id == 'get'){
+    //   let connect = new Connect()
+    //   axios.post(connect.host + connect.ip.kinds, {
+    //   }).then(resp => {
+    //     if (resp.data.status) {
+    //       to.$route.params.id = resp.data.data[0].catalogno;
+    //     }
+    //   }, resp => {
+    //     if (typeof (resp.data) !== undefined || resp.data == null) {
+    //       // this.$message.error('网络连接失败！')
+    //     } else {
+    //       // this.$message.error('添加失败！')
+    //     }
+    //   })
+    // }
     // 是否需要登录
     if (to.matched.some(record => record.meta.login)) {
       console.log('asdfasdsf')

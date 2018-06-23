@@ -5,7 +5,7 @@
             <my-header></my-header>
             <!-- <el-main id="main"> -->
               <!-- <transition name="el-fade-in-linear" mode="out-in"> -->
-                  <router-view></router-view>
+              <router-view></router-view>
               <!-- </transition> -->
           <!-- </el-main> -->
         </el-container>

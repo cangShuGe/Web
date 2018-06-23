@@ -1,6 +1,6 @@
 <template>
     <my-sticky sticky-class="sticky-class">
-        <el-aside id="side" width="240px">
+        <el-aside id="side" width="280px">
             <el-menu class="el-side-container" :default-active="$route.name" :default-openeds="defaultOpeneds">
                 <my-side-item ></my-side-item>
                 <!-- :json="filterRoutes" -->

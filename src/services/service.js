@@ -7,7 +7,7 @@ import axios from "axios"
 export default class Connect{
     constructor(){
       this.response,
-      this.host = "http://10.236.26.88:8888",
+      this.host = "http://10.236.88.78:8888",
       this.ip = {
          login:'/userLogin',
          register:'/userSign',
@@ -29,17 +29,20 @@ export default class Connect{
          showMyEbook:'/getshelfbyacc',
          deleteMyEbook:'/delbookshelf',
 
+         adviceBooks:'/recommendBooks',//实体书推荐地址
+         adviceEbook:'/recommendOnBooks',
+
          buyBookNow:'/buyBooks',//立即购买
 
          allBooks:'/getAllBooks',//全部书籍
          allKindsBooks:'/getBooksByCata',//分类全部书籍
          searchBooks:'/getBookByName',//按照作者、书籍名模糊搜索书籍
          getBookByNo:'/getBookByNo',//根据编号获取书籍的全部信息
-         addBook:'',   //'增加书籍',
-         deleteBook:'删除书籍地址',
+         addBook:'/addbooks',   //'增加书籍',
+         deleteBook: '/delbooks',//删除书籍地址
          updateBook: '/updbooks', //更新书籍信息地址
          kinds: '/adminShowCata',//书籍种类地址
-         deleteKinds: '/delbooks',//删除书籍种类地址
+         deleteKinds: '/admindelcata',//删除书籍种类地址
          addKinds:'/addcatalog',//添加书籍分类
 
          allEBooks:'/getOnBooks',
@@ -47,15 +50,16 @@ export default class Connect{
          searchEBooks: '/getByNameOrAuth',//按照作者、书籍名模糊搜索书籍
          getEBookByNo: '/getonbyno',//根据编号获取书籍的全部信息
          Ekinds:'/adminShowCata',//电子书种类地址
-         addEBook:'添加电子书地址',
-         updateEBook:'更新电子书籍地址',
-         deleteEBook:'删除电子书地址',
-         addEKinds: '/addcatalog',//添加电子书籍种类地址
+         addEBook:'/adminaddonbooks',//添加电子书地址
+        updateEBook: '/adminupdateonbooks',// 更新电子书籍地址
+        deleteEBook: '/admindelonbooks',//删除电子书地址
+         //addEKinds: '/addcatalog',//添加电子书籍种类地址
          deleteEKinds:'删除电子书籍种类地址',
 
-         changeMail: '/adminupdateusers',//修改邮箱地址
+         changeMail: '/adminupdateusers',//通过用户名修改邮箱地址
          accountDelete: '/admindelusers',//通过用户名删除账号
          emaiDelete: '/admindelusers',//通过邮箱删除账号
+         addBookCata:'/addcatalog',
 
       }
     }

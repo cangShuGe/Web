@@ -48,10 +48,10 @@ export default {
           }
           let connect = new Connect()
 
-          axios.post(connect.host + connect.ip.changeMail,
-          this.formName).then(resp =>{
+          axios.post(connect.host + connect.ip.changeMail+"?mailbox="+this.formName.email+"&account="+this.formName.account,{
+          }).then(resp =>{
             if(resp.data.status){
-              this.$message.alert('修改邮箱成功')
+              this.$message.success('修改邮箱成功')
             }
           },resp=>{
             if(typeof(resp.data) !== undefined || resp.data == null){

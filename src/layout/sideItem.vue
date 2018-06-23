@@ -15,9 +15,9 @@
                     </div>
                 <!-- </el-menu-item-group> -->
             </el-submenu>
-            <el-menu-item index="2">
+            <!-- <el-menu-item index="2">
               <span slot="title">二手书</span>
-            </el-menu-item>
+            </el-menu-item> -->
             <el-submenu index="3">
               <span slot="title">电子书</span>
                 <div v-for="(item,index) in Ekinds" :key="index">
@@ -55,39 +55,38 @@ export default {
         json: Array
     },
     created:function(){
-        // for(var i = 1; i <= (this.kindsTotal)/10 + 1;i++){
-          this.getKinds()
-        // }
-        for(var i = 1; i <= this.ekindsTotal;i++){
-          this.getEKinds(i)
-        }
+        this.getKinds()
+
+
+
     },
     computed: {
         ...mapState([
-        ])
+        ]),
+
     },
+    // watch:
     methods: {
-      getEKinds(index){
-        let connect = new Connect()
-        axios.post(connect.host + connect.ip.Ekinds,{
-          pageNum:index
-        }).then(resp=>{
-          if(resp.data.status){
-            this.ekindsTotal = resp.data.total
-            this.Ekinds.push(resp.data.data)
-          }
-        },resp => {
-        })
-      },
-      getKinds(index){
+      getKinds(){
         let connect = new Connect()
         axios.post(connect.host + connect.ip.kinds,{
+          // page:index
         }).then(resp=>{
           if(resp.data.status){
             this.kindsTotal = resp.data.total
-            this.Kinds.push(resp.data.data)
+            this.Kinds=resp.data.data
+            this.Ekinds = resp.data.data
+            // this.$slots.
+            // this.$router.
           }
+          // console.log(this.kinds)
+          // console.log("--------****----------")
         },resp => {
+          if(typeof(resp.data) !== undefined || resp.data == null){
+              this.$message.error('网络连接失败！')
+            }else{
+              this.$message.error('添加失败！')
+            }
         })
       },
         routeName(route) {
@@ -102,12 +101,12 @@ export default {
         },
         choseBook(id,name){
             let ebook = new Array(id,name)
-            console.log(id + name)
+            // console.log(id + name)
             this.$router.push({path:'/index/ebook/'+id})
         },
         choseRealBook(id,name){
             let real = new Array(id,name)
-            console.log(id + name)
+            // console.log(id + name)
             this.$router.push({path:'/index/realbook/'+id})
         }
     }

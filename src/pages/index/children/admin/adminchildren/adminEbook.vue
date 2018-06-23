@@ -2,10 +2,6 @@
     <div id="adminebook">
       <el-container direction="horizontal">
           <el-main id="main">
-            <h3>增加书籍分类</h3>
-            <kind-add></kind-add>
-            <h3>删除书籍分类</h3>
-            <kind-delete></kind-delete>
             <h3>增加</h3>
             <my-add></my-add>
             <h3>更改书籍库存及价格</h3>

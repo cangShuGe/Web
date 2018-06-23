@@ -1,6 +1,6 @@
 <template>
     <div id="banner">
-        <el-carousel type="card" height="250px" trigger="click" :interval="4000">
+        <el-carousel type="card" height="300px" trigger="click" :interval="4000">
             <el-carousel-item>
                 <div class="item-content" @click="ChangeView">
                     <img :src="book[0].url">
@@ -42,35 +42,36 @@ export default {
     created:function(){
       console.log('banner')
       let connect = new Connect()
-        // if(this.ebook === true){
-        //   axios.post(connect.host + connect.ip.adviceEbook,{
-        //     catalogno:this.message
-        //   }).then(resp=>{
-        //       if(resp.data.status){
-        //           this.book = resp.data.data
-        //       }
-        //   },resp=>{
-        //       if(typeof(resp.data) === undefined || !resp.data){
-        //           this.$message.error('网络连接错误')
-        //       }else{
-        //           this.$message.error('获取数据失败')
-        //       }
-        //   })
-        // }else{
-        //   axios.post(connect.host + connect.ip.adviceBook,{
-        //     catalogno:this.message
-        //   }).then(resp=>{
-        //       if(resp.data.status){
-        //           this.book = resp.data.data
-        //       }
-        //   },resp=>{
-        //       if(typeof(resp.data) === undefined || !resp.data){
-        //           this.$message.error('网络连接错误')
-        //       }else{
-        //           this.$message.error('获取数据失败')
-        //       }
-        //   })
-        // }
+        if(this.ebook === true){
+          axios.post(connect.host + connect.ip.adviceEbook,{
+            catalogno:this.message
+          }).then(resp=>{
+              if(resp.data.status){
+                  this.book = resp.data.data
+              }
+          },resp=>{
+              if(typeof(resp.data) === undefined || !resp.data){
+                  this.$message.error('网络连接错误')
+              }else{
+                  this.$message.error('获取数据失败')
+              }
+          })
+        }else{
+          axios.post(connect.host + connect.ip.adviceBooks,{
+            catalogno:this.message
+          }).then(resp=>{
+            console.log(resp)
+              if(resp.data.status){
+                  this.book = resp.data.data
+              }
+          },resp=>{
+              if(typeof(resp.data) === undefined || !resp.data){
+                  this.$message.error('网络连接错误')
+              }else{
+                  this.$message.error('获取数据失败')
+              }
+          })
+        }
     },
     methods:{
       ChangeView(){
@@ -88,7 +89,7 @@ export default {
                 width: 100%;
                 height: 100%;
                 img {
-                    width: 100%;
+                    height : 100%;
                 }
                 .title {
                     position: absolute;

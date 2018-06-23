@@ -609,7 +609,6 @@ export default {
       },
       changePwd(){
         let connect = new Connect()
-        // axios.post(connect.host + connect.ip.)
         axios.post(connect.host + connect.ip.changePwd + '?account='+this.formInline.username+'&pwd=' + this.formChangePwd.oldPwd + '&newPwd='+ this.formChangePwd.newPwd,{
 
           }).then(resp=>{

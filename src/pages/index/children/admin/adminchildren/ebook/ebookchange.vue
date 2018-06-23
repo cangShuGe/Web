@@ -95,36 +95,36 @@ export default {
     },
     created:function(){
       // for(var i = 1; i <= (kindsTotal)/10 + 1;i++){
-        this.getKinds()
+        // this.getKinds()
       // }
-      for(var i = 1; i <= allTotal/10 + 1;i++){
-        this.getEbook(i)
+      for(var i = 1; i <= this.allTotal;i++){
+        this.getEBook(i)
       }
     },
     methods:{
-      getKinds(){
+      getEBook(index){
         let connect = new Connect()
-        axios.post(connect.host + connect.ip.Ekinds,{
-          // page:index
-        }).then(resp=>{
-          if(resp.data.status){
-            this.kindsTotal = resp.data.total
-            this.kinds.push(resp.data.data)
-          }
-        },resp => {
-        })
-      },
-      getEbook(index){
-        let connect = new Connect()
-        axios.post(connect.host + connect.ip.allEBooks,{
-          pageNum:index
-        }).then(resp=>{
-          if(resp.data.status){
-          this.allTotal = resp.data.total
-            this.all.push(resp.data.data)
-          }
-        },resp => {
-        })
+         axios.post(connect.host + connect.ip.allEBooks+'?pageNum='+index+'&pageSize=100',{
+            pageNum:this.currentPage,
+            pageSize:8
+          }).then(resp=>{
+            if(index === 1){
+              this.allTotal = resp.data.total
+              this.all=resp.data.data
+              console.log(this.all)
+            }else{
+              this.all.push(resp.data.data)
+            }
+            if(index<this.allTotal){
+              this.getBook(index+1)
+            }
+          },resp => {
+            if(typeof(resp.data)===undefined || resp.data === null){
+              this.$message.error('网络连接错误')
+            }else{
+              this.$message.error(resp.data.message)
+            }
+          })
       },
       queryIDSearch(queryString, cb) {
         let all = this.all;
@@ -162,7 +162,7 @@ export default {
       },
       handleSelect(item) {
         this.form.bookName = item.bookname
-        this.form.bookNo = item.bookno
+        this.form.bookNo = ''+item.bookno
         this.form.price = item.price
         console.log(item);
       },
@@ -170,7 +170,11 @@ export default {
         this.$confirm('确定要更改书籍信息吗？').then(_=>{
 
           let para = {
-            bookno:this.form.bookNo,
+            bookno:Number(this.form.bookNo),
+          }
+          if(!this.form.bookNo){
+            this.$message.error('您还没填写书籍的ID，此为必填字段！')
+            return;
           }
           if(this.form.price === null){
             this.$message.error('您还没填写花费的积分数量！')
@@ -179,13 +183,11 @@ export default {
             para['price'] = this.form.price
           }
           let connect = new Connect()
-          axios.post(connect.host + connect.ip.updateEBook,
+          axios.post(connect.host + connect.ip.updateEBook +'?bookno=' + para.bookno + '&price=' + para.price,
           para).then(resp=>{
-
             if(resp.data.status){
-              this.$message.alert('更改成功！')
+              this.$message.success('更改成功！')
             }
-
           },resp=>{
 
             if(typeof(resp.data) !== undefined || resp.data == null){

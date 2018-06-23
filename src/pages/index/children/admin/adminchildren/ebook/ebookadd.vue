@@ -10,9 +10,6 @@
         <el-form-item label="书籍名称:">
           <el-input placeholder="书籍名称" v-model="form.bookName" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="书籍编号">
-          <el-input placeholder="书籍编号" v-model="form.bookNo" auto-complete="off"></el-input>
-        </el-form-item>
         <el-form-item label="书籍分类:">
           <el-autocomplete
             class="inline-input"
@@ -42,6 +39,19 @@
             :show-file-list="false"
             :before-upload="beforeUpload">
             <img v-if="form.url" :src="form.url" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="选择文件">
+          <!-- <el-button type="primary" @click="dialogVisible = true">点击选择图片</el-button> -->
+          <el-upload
+            class="avatar-uploader"
+            :action= domain
+            :http-request = upqiniufile
+            :show-file-list="false"
+            :before-upload="beforeFileUpload">
+            <!-- <img v-if="form.press" :src="form.url" class="avatar"> -->
+            <el-tag v-if="form.press">文件已选定</el-tag>
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
@@ -102,13 +112,14 @@ export default {
     methods:{
       getKinds(){
         let connect = new Connect()
-        axios.post(connect.host + connect.ip.Ekinds,{
+        axios.post(connect.host + connect.ip.kinds,{
           // page:index
         }).then(resp=>{
           if(resp.data.status){
-            this.kindsTotal = resp.data.total
-            this.kinds.push(resp.data.data)
+            this.kinds=resp.data.data
           }
+          console.log(this.kinds)
+          console.log("--------****----------")
         },resp => {
         })
       },
@@ -127,14 +138,14 @@ export default {
       // 重命名要上传的文件
       const keyname = 'wu' + new Date().getTime() + '.' + filetype
       // 从后端获取上传凭证token
-      this.axios.get('/up/token').then(res => {
+      axios.get('/up/token').then(res => {
         // console.log(res)
         const formdata = new FormData()
         formdata.append('file', req.file)
         formdata.append('token', res.data)
         formdata.append('key', keyname)
         // 获取到凭证之后再将文件上传到七牛云空间
-        this.axios.post(this.domain, formdata, config).then(res => {
+        axios.post(this.domain, formdata, config).then(res => {
           this.form.url = 'http://' + this.qiniuaddr + '/' + res.data.key
           console.log(this.form.url)
         })
@@ -151,6 +162,37 @@ export default {
         this.$message.error('上传头像图片大小不能超过 2MB!')
       }
       return isJPG && isLt2M
+    },
+    upqiniufile (req) {
+      console.log(req)
+      console.log('req')
+      const config = {
+        headers: {'Content-Type': 'multipart/form-data'}
+      }
+      let filetype = req.file.name.substring(req.file.name.lastIndexOf('.') + 1,req.file.name.length)
+      // new File.name.
+      // 重命名要上传的文件
+      const keyname = 'wu' + new Date().getTime() + '.' + filetype
+      // 从后端获取上传凭证token
+      axios.get('/up/token').then(res => {
+        // console.log(res)
+        const formdata = new FormData()
+        formdata.append('file', req.file)
+        formdata.append('token', res.data)
+        formdata.append('key', keyname)
+        // 获取到凭证之后再将文件上传到七牛云空间
+        axios.post(this.domain, formdata, config).then(res => {
+          this.form.press = 'http://' + this.qiniuaddr + '/' + res.data.key + '?attname='
+          console.log(this.form.press)
+        })
+      })
+    },
+    beforeFileUpload (file) {
+      const isLt2M = file.size / 1024 / 1024 < 10
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 10MB!')
+      }
+      return isLt2M
     },
       queryKinddsSearch(queryString, cb) {
         let kinds = this.kinds;
@@ -187,15 +229,20 @@ export default {
 
         let para = {
             bookname:this.form.bookName,
-            bookno:''+(new Date().getTime()),
-            author:this.form.author,
+            bookno:Number(new Date().getTime()/100000000),
+            author:' ',
             catalogno:this.form.catalogno,
-            publishTime:''+this.form.publishTime.getTime,
+            resume:this.form.resume,
+            publishTime:new Date().getTime(),
             press:this.form.press,
             price:this.form.price,
         }
         if(!this.form.bookName){
           this.$message.error('请填写书籍名称')
+          return ;
+        }
+        if(!this.form.press){
+          this.$message.error('请上传电子书文件')
           return ;
         }
         if(!this.form.catalogno){
@@ -215,9 +262,8 @@ export default {
 
         axios.post(connect.host + connect.ip.addEBook,
         para).then(resp=>{
-
           if(resp.data.status){
-            this.$message.alert('添加成功!')
+            this.$message.success('添加成功!')
           }
 
         },resp=>{

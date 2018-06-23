@@ -15,16 +15,19 @@ export default {
             'user',
             'logs',
             'useronline',
-        ])
+        ]),
+        id:function(){
+          return this.$route.params.id
+        }
     },
     created:function(){
       console.log(this.$route.params.id)
-      this.id = this.$route.params.id
+      // this.id = this.$route.params.id
     },
     components:{myBanner,myCard},
     data() {
         return {
-          id:'',
+          // id:'',
           ebook:true
         }
     }

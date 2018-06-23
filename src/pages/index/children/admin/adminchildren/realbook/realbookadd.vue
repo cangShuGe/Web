@@ -10,9 +10,6 @@
         <el-form-item label="书籍名称:">
           <el-input placeholder="书籍名称" v-model="form.bookName" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="书籍编号:">
-          <el-input placeholder="书籍编号" v-model="form.bookNo" auto-complete="off"></el-input>
-        </el-form-item>
         <el-form-item label="作者:">
           <el-input placeholder="作者" v-model="form.author" auto-complete="off"></el-input>
         </el-form-item>
@@ -120,21 +117,20 @@ export default {
     },
     created:function(){
 
-      // for(var i = 1; i <= (kindsTotal)/10 + 1;i++){
         this.getKinds()
-      // }
     },
     methods:{
-
+      
       getKinds(){
         let connect = new Connect()
         axios.post(connect.host + connect.ip.kinds,{
           // page:index
         }).then(resp=>{
           if(resp.data.status){
-            this.kindsTotal = resp.data.total
-            this.kinds.push(resp.data.data)
+            this.kinds=resp.data.data
           }
+          console.log(this.kinds)
+          console.log("--------****----------")
         },resp => {
         })
       },
@@ -153,14 +149,14 @@ export default {
       // 重命名要上传的文件
       const keyname = 'wu' + new Date().getTime() + '.' + filetype
       // 从后端获取上传凭证token
-      this.axios.get('/up/token').then(res => {
+      axios.get('/up/token').then(res => {
         // console.log(res)
         const formdata = new FormData()
         formdata.append('file', req.file)
         formdata.append('token', res.data)
         formdata.append('key', keyname)
         // 获取到凭证之后再将文件上传到七牛云空间
-        this.axios.post(this.domain, formdata, config).then(res => {
+        axios.post(this.domain, formdata, config).then(res => {
           this.form.url = 'http://' + this.qiniuaddr + '/' + res.data.key
           console.log(this.form.url)
         })
@@ -195,14 +191,14 @@ export default {
       },
 
       AddBook(){
-        let connect = new Connect()
 
         let para = {
             bookname:this.form.bookName,
-            bookno:''+(new Date().getTime()),
+            bookno:Number(new Date().getTime()/100000000),
             author:this.form.author,
             catalogno:this.form.catalogno,
-            publishTime:''+this.form.publishTime.getTime,
+            resume:this.form.resume,
+            publishTime:this.form.publishTime.getTime,
             press:this.form.press,
             price:this.form.price,
         }
@@ -245,8 +241,8 @@ export default {
           para['url'] = this.form.url
         }
 
-        axios.post(connect.host + connect.ip.addBook,
-        para).then(resp=>{
+        let connect = new Connect()
+        axios.post(connect.host + connect.ip.addBook,para).then(resp=>{
 
           if(resp.data.status){
             this.$message.alert('添加成功!')

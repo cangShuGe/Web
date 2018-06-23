@@ -34,6 +34,7 @@ export default {
     #verContainer {
         height: 100%;
         #horContainer {
+            background-image:url("../../../../assets/img/echo.jpg");
             height: 100%;
             #main {
                 position: relative;

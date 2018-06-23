@@ -41,7 +41,7 @@ export const sideRoutes = [
         name: 'home',
         path: '/:id',
         component: home,
-        redirect:'/index/realbook/主页',
+        redirect:'/index/realbook/1',
         children:[
           {
               name : 'RealBook',

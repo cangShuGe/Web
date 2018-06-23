@@ -41,30 +41,27 @@ export default {
     methods:{
 
       AddKinds(){
-        console.log('asdfasdfs')
+        //console.log('asdfasdfs')
 
         let connect = new Connect()
-        let para = {
-          catalogname:this.form.catalogname,
-          catalogno:this.form.catalogno
-        }
 
-        if(!this.catalogname || this.catalogname.length === 0){
+        if(!this.form.catalogname || this.form.catalogname.length === 0){
           this.$message.error('请填写分类名称');
           return;
         }
-        if(!this.catalogno || this.catalogno.length === 0){
+        if(!this.form.catalogno || this.form.catalogno.length === 0){
           this.$message.error('请填写分类编号');
           return;
         }
 
-        axios.post(connect.host + this.addKinds,
-        para).then(resp=>{
-
+        axios.post(connect.host + connect.ip.addBookCata,{
+          catalogname:this.form.catalogname,
+          catalogno:this.form.catalogno
+        }).then(resp=>{
           if(resp.data.status){
-            this.$message.alert('添加成功')
+            this.$message.success('添加成功')
           }
-
+          
         },resp=>{
 
           if(typeof(resp.data) !== undefined || resp.data == null){

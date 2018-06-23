@@ -82,44 +82,37 @@ export default {
 
           ],
           allTotal:1,
-          kindsTotal:0,
         }
     },
     created:function(){
-
-      // for(var i = 1; i <= (kindsTotal)/10 + 1;i++){
-        this.getKinds()
-      // }
-      for(var i = 1; i <= allTotal;i++){
-        this.getEbook(i)
+      for(var i = 1; i <= this.allTotal;i++){
+        this.getEBook(i)
       }
     },
     methods:{
-
-      getKinds(){
+      getEBook(index){
         let connect = new Connect()
-        axios.post(connect.host + connect.ip.Ekinds,{
-
-          // page:index
-        }).then(resp=>{
-          if(resp.data.status){
-            this.kindsTotal = resp.data.total
-            this.kinds.push(resp.data.data)
-          }
-        },resp => {
-        })
-      },
-      getEbook(index){
-        let connect = new Connect()
-        axios.post(connect.host + connect.ip.allEBooks,{
-          pageNum:index
-        }).then(resp=>{
-          if(resp.data.status){
-          this.allTotal = resp.data.total
-            this.all.push(resp.data.data)
-          }
-        },resp => {
-        })
+         axios.post(connect.host + connect.ip.allEBooks+'?pageNum='+index+'&pageSize=100',{
+            pageNum:this.currentPage,
+            pageSize:8
+          }).then(resp=>{
+            if(index === 1){
+              this.allTotal = resp.data.total
+              this.all=resp.data.data
+              console.log(this.all)
+            }else{
+              this.all.push(resp.data.data)
+            }
+            if(index<this.allTotal){
+              this.getBook(index+1)
+            }
+          },resp => {
+            if(typeof(resp.data)===undefined || resp.data === null){
+              this.$message.error('网络连接错误')
+            }else{
+              this.$message.error(resp.data.message)
+            }
+          })
       },
       queryIDSearch(queryString, cb) {
         let all = this.all;
@@ -135,15 +128,7 @@ export default {
       queryNameSearch(queryString, cb) {
         let all = this.all;
         let results = queryString ? all.filter(this.createNameFilter(queryString)) : all;
-        // console.log(results)
-        // let list = []
-        // for(var item = 0;item < all.length;item++){
-        //   let dic = {}
-        //   dic['value'] = all[item].bookname
-        //   // console.log(dic)
-        //   list.push(dic)
-        // }
-        // 调用 callback 返回建议列表的数据
+
         cb(results);
       },
       createNameFilter(queryString) {
@@ -165,7 +150,7 @@ export default {
       },
       handleSelect(item) {
         this.form.bookName = item.bookname
-        this.form.bookNo = item.bookno
+        this.form.bookNo = ''+item.bookno
         this.form.author = item.author
         this.form.total = item.total
         this.form.price = item.price
@@ -185,18 +170,18 @@ export default {
           }
 
 
-          axios.post(connect.host + connect.ip.deleteEBook,
+          axios.post(connect.host + connect.ip.deleteEBook + '?bookno=' + para.bookno,
           para).then(resp=>{
 
             if(resp.data.status){
-              this.$message.alert('删除成功！')
+              this.$message.success('删除成功！')
             }
 
           },resp=>{
             if(typeof(resp.data) !== undefined || resp.data == null){
               this.$message.error('网络连接失败！')
             }else{
-              this.$message.error('删除失败！')
+              this.$message.error(resp.data.message)
             }
 
           })

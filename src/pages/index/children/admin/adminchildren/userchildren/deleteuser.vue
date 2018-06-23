@@ -72,11 +72,11 @@ export default {
 
           let connect = new Connect()
 
-          axios.post(connect.host + connect.ip.accountDelete,
-          this.formAccount).then(resp=>{
+          axios.post(connect.host + connect.ip.accountDelete+"?name="+this.formAccount.account,{
+          }).then(resp=>{
 
             if(resp.data.status){
-              this.$message.alert('删除成功')
+              this.$message.success('删除成功')
             }
 
           },resp=>{
@@ -98,11 +98,10 @@ export default {
 
           let connect = new Connect()
 
-          axios.post(connect.host + connect.ip.emaiDelete,
-          this.formEmail).then(resp=>{
-
+          axios.post(connect.host + connect.ip.emaiDelete+"?name="+this.formEmail.email,{
+          }).then(resp=>{
             if(resp.data.status){
-              this.$message.alert('删除成功')
+              this.$message.success('删除成功')
             }
 
           },resp=>{
