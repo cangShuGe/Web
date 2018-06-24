@@ -7,7 +7,7 @@ import axios from "axios"
 export default class Connect{
     constructor(){
       this.response,
-      this.host = "http://10.236.88.78:8888",
+      this.host = "http://10.236.212.187:8888",
       this.ip = {
          login:'/userLogin',
          register:'/userSign',

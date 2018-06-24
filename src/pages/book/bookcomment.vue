@@ -1,4 +1,6 @@
 <template>
+<div>
+
   <el-table
     :data="tableData"
     style="width: 100%">
@@ -26,13 +28,6 @@
         </div>
       </template>
     </el-table-column>
-    <el-table-column label="购买数量" width="180">
-      <template slot-scope="scope">
-          <i class="el-icon-goods"></i>
-          <span style="margin-left: 10px">{{ scope.row.num }}</span>
-      </template>
-    </el-table-column>
-
     <el-table-column label="用户评分">
       <template slot-scope="scope">
         <el-rate
@@ -47,16 +42,53 @@
 
     <el-table-column label="用户评价">
       <template slot-scope="scope">
-        <el-input
-          type="textarea"
+        <el-tag
           :rows="2"
-          disabled
-          v-model="scope.row.judge">
-      </el-input>
+          autosize
+          >{{scope.row.judge}}
+      </el-tag>
     </template>
     </el-table-column>
-
   </el-table>
+
+
+  <h3>编写评价</h3>
+  <el-row>
+    <el-col :span="2" :offset="1">
+      <b>评分：</b>
+    </el-col>
+    <el-col :span="12" :offset="2">
+      <el-rate
+      v-model="grade"
+      show-text>
+      </el-rate>
+    </el-col>
+  </el-row>
+
+  <b>评价（不得少于十字）:</b>
+  <br>
+  <br>
+  <el-input
+  type="textarea"
+  :autosize="false"
+  resize="none"
+  :rows="5"
+  placeholder="请输入内容"
+  v-model="remark">
+  </el-input>
+  <br>
+  <br>
+  <el-row>
+    <el-col :span="4" :offset="20">
+      <el-button type="success" @click="submitRemark" >发表评论</el-button>
+    </el-col>
+  </el-row>
+  <br>
+  <br>
+  <br>
+
+</div>
+
 </template>
 
 <script>
@@ -64,6 +96,8 @@
     name:'bookcomment',
     data() {
       return {
+        grade:null,
+        remark:'',
         tableData: [{
           date: '2018-05-02',
           name: 'geekLR',
@@ -96,6 +130,22 @@
 
     },
     methods: {
+      submit(){
+
+      },
+      submitRemark(){
+
+        if(this.grade === null || this.grade === 0){
+          this.$message.error('请打分')
+        }else if(!this.remark){
+          this.$message.error('请编写评价')
+        }else if(this.remark.length < 10){
+          this.remark.error('评价不得少于十字')
+        }else{
+          this.submit()
+        }
+
+      },
       getBookRecord(){
 
         let connect = new Connect()

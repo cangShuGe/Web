@@ -174,6 +174,11 @@ export default {
               this.all=resp.data.data
             }
           },resp => {
+            if(typeof(resp.data.status) == undefined || resp.data.data){
+              this.$message.error('网络连接失败！')
+            }else{
+              this.$message.error(resp.data.message)
+            }
           })
         }else{
           axios.post(this.connect.host + this.connect.ip.allKindsBooks+'?pageNum='+this.currentPage+'&pageSize=8'+'&catalogno='+this.kindsId,{
@@ -185,6 +190,11 @@ export default {
             this.all=resp.data.data
             }
           },resp => {
+            if(typeof(resp.data.status) == undefined || resp.data.data){
+              this.$message.error('网络连接失败！')
+            }else{
+              this.$message.error(resp.data.message)
+            }
           })
 
         }

@@ -10,7 +10,7 @@
             <!-- <el-main> -->
             <div class="header-right">
               <div class="right-item">
-                <el-input placement="top-end" max="20" size="mini" :clearable="true" placeholder="请输入内容" v-model="input5">
+                <el-input placement="top-end" max="20" size="mini" :clearable="true" placeholder="请输入内容" v-model="target">
                   <el-button @click="search" slot="append" icon="el-icon-search"></el-button>
                 </el-input>
               </div>
@@ -95,7 +95,7 @@ export default {
     name: 'my-header',
     data() {
         return {
-            input5:'',
+            target:'',
             // Online:useronline,
             breadcrumb: '',
             pwdType: 'password',
@@ -144,7 +144,9 @@ export default {
           this.dialogFormVisible = false
         },
         search(){
-
+          if(this.target){
+            this.$router.push({path:'/index/search/' + this.target})
+          }
         },
         passwordToggle() {
             if (this.pwdType === 'password') {

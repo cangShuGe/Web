@@ -193,17 +193,17 @@ export default {
   .bookall {
     width:100%;
     height: 100%;
-    background-color: #CCFFCC
+    background-color: rgb(253, 253, 253)
   }
   .comment {
     width:100%;
     height:100%;
-    background-color: #CCFFCC
+    background-color: rgb(253, 253, 253)
   }
   .bookbody {
     width:100%;
     height: 100%;
-    background-color: #CCFFCC
+    background-color: rgb(253, 253, 253)
   }
   .el-row {
     margin-bottom: 20px;
@@ -212,7 +212,7 @@ export default {
     border-radius: 4px;
   }
   .bg-purple {
-    background: #CCFFCC;
+    background: rgb(253, 253, 253);
   }
   .grid-content {
     border-radius: 4px;
@@ -225,6 +225,6 @@ export default {
   }
   .row-bg {
     padding: 10px 0;
-    background-color: #f9fafc;
+    background-color: rgb(253, 253, 253);
   }
 </style>
