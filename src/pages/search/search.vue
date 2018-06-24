@@ -2,31 +2,38 @@
     <div id="card">
         <div v-for="(item,index) in items" :key="index"><!--:key后面是与前方相同的属性-->
             <el-row :gutter="20">
-                <el-col :span="8">
+                <el-col :span="6">
                     <div class="div1">
                         <img :src="item.url" alt="暂无图片"><!--不用加大括号的方式-->
                     </div>
                 </el-col>
-                <el-col :span="16">
+                <el-col :span="18">
                   <b>书籍名称：{{item.bookname}}</b>
-                  <br>
+                  <br/>
+                  <br/>
                   <b>书籍简介：{{item.resume}}</b>
-                  <br>
+                  <br/>
+                  <br/>
                   <div v-if="item.ebook">
                     <b>书籍类型：电子书</b>
-                    <br>
+                    <br/>
+                    <br/>
                     <el-tag @click="download(item.press)">下载本书</el-tag>
                   </div>
                   <div v-else>
                     <b>书籍类型：实体书</b>
-                    <br>
+                    <br/>
+                    <br/>
                     <b>书籍作者:{{item.author}}</b>
-                    <br>
-                    <el-tag @click="gobuy(item.bookno)">前去购买</el-tag>
+                    <br/>
+                    <br/>
+                    <el-button type="success" round @click="gobuy(item.bookno)">前去购买</el-button>
                   </div>
                   <!-- <el-button type="success" round>查看详情</el-button> -->
                 </el-col>
             </el-row>
+            <br/>
+            <br/>
         </div>
 
         <div v-if="result">
@@ -39,7 +46,9 @@
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :current-page="currentPage"
-                layout="prev, pager, next, jumper"
+                :page-sizes="[1,2,3,4,5,6,7,8,9,10]"
+                :page-size="10"
+                layout="total, sizes, prev, pager, next, jumper"
                 :total="totalItems">
            </el-pagination>
         </div>
@@ -58,12 +67,12 @@ export default {
     data() {
         return {
             items:[
-                {bookname:'aaaaaaaaaaaaaaaaa',resume:'hhhhhhhhhhhhhhhhhhhhhhhhh',url:'http://pak69l11h.bkt.clouddn.com/chaliheqiaokeli.jpg',ebook:false}
+                {bookname:'',resume:'',url:'',ebook:false}
             ],
             ite:{bookno:'0',  bookname:'0',catalogno: '1', author:'0', publishTime:' ', press:' ', total:0, price:0,resume: ' ',url: ''},
             currentPage:new Number(),
             pageSize:10,
-            totalItems:501,
+            totalItems:0,
             connect:new Connect(),
             total:1,
             Etotal:1
@@ -115,7 +124,7 @@ export default {
           }else{
             this.total = total
           }
-          this.totalItems = this.total * 10
+          this.totalItems = items.length//this.total * 10
 
           if(items){
             let item = 0

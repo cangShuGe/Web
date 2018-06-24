@@ -20,7 +20,7 @@
                             <el-tag type="info">{{formBook.press}}</el-tag>
                         </el-form-item>
                         <el-form-item label="出版时间">
-                            <el-tag type="info">{{formBook.publishTime.toString()}}</el-tag>
+                            <el-tag type="info">{{formBook.publishTime | formatDate}}</el-tag>
                         </el-form-item>
                         <el-form-item label="抵押金币">
                             <el-switch v-model="form.discord"></el-switch>
@@ -65,6 +65,7 @@ import myHeader from '@/layout/header'
 import { mapState } from 'vuex'
 import Connect from '@/services/service'
 import myComment from './bookcomment'
+import {formatDate} from '@/utils/filters.js'
 export default {
     name: 'bookbody',
     components:{myComment},
@@ -108,6 +109,12 @@ export default {
     created:function(){
       this.getBook()
     },
+    filters:{
+      formatDate(time){
+        var data = new Date(time);
+        return formatDate(data,'yyyy-MM-dd hh:mm:ss');
+      }
+    },
     methods: {
 
       getBook(){
@@ -117,7 +124,7 @@ export default {
         }).then(resp=>{
           console.log(resp)
           this.formBook = resp.data.data
-          this.formBook.publishTime = new Date(this.formBook.publishTime)
+          //this.formBook.publishTime = new Date(this.formBook.publishTime)
         },resp=>{
             if(!resp.data){
               this.$message.error('网络连接失败')

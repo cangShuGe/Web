@@ -105,8 +105,8 @@ export default {
             dialogRegisterVisible: false,
             dialogFormVisible: false,
             form: {
-                username: 'uncleLian',
-                password: '123456'
+                username: '',
+                password: ''
             },
             registerfrom:{
                 username: '',

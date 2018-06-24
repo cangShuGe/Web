@@ -4,14 +4,7 @@
   <el-table
     :data="tableData"
     style="width: 100%">
-    <el-table-column
-      label="评价日期"
-      width="180">
-      <template slot-scope="scope">
-        <i class="el-icon-time"></i>
-        <span style="margin-left: 10px">{{ scope.row.date }}</span>
-      </template>
-    </el-table-column>
+
     <el-table-column
       label="用户名称"
       width="180">
@@ -24,14 +17,24 @@
           </div>
         </el-popover>--><!--指针滑动变成有显示-->
         <div slot="reference" class="name-wrapper">
-            <el-tag size="medium" type="success">{{ scope.row.name }}</el-tag>
+            <el-tag size="medium" type="success">{{ scope.row.account }}</el-tag>
         </div>
       </template>
     </el-table-column>
+
+    <el-table-column
+      label="评价日期"
+      width="180">
+      <template slot-scope="scope">
+        <i class="el-icon-time"></i>
+        <span style="margin-left: 10px">{{ scope.row.buyTime|formatDate }}</span>
+      </template>
+    </el-table-column>
+    
     <el-table-column label="用户评分">
       <template slot-scope="scope">
         <el-rate
-          v-model="scope.row.scores"
+          v-model="scope.row.score"
           disabled
           show-score
           text-color="#ff9900"
@@ -92,6 +95,9 @@
 </template>
 
 <script>
+import axios from "axios"
+import Connect from '@/services/service'
+import {formatDate} from '@/utils/filters.js'
   export default {
     name:'bookcomment',
     data() {
@@ -99,35 +105,24 @@
         grade:null,
         remark:'',
         tableData: [{
-          date: '2018-05-02',
-          name: 'geekLR',
-          num: 10,
-          scores:3.5,
-          judge: 'good good good'
-        }, {
-          date: '2018-05-04',
-          name: 'babyQ',
-          num: 3,
-          scores:4.5,
-          judge: 'good good good'
-        }, {
-          date: '2018-05-01',
-          name: '王小虎',
-          num: 2,
-          scores:1.5,
-          judge: 'bad bad bad'
-        }, {
-          date: '2018-05-03',
-          name: 'QingGang',
-          num: 3,
-          scores:4.5,
-          judge: '还是挺好的'
+          account: 'geekLR',
+          bookno:0,
+          buyTime: new Date(),//说明类型
+          judge: 'good good good',
+          num:0,
+          score:3.5
         }]
       }
     },
-    props:['id'],
+    props:['id'],//父组件中函数的名称
+    filters:{
+      formatDate(time){
+        var data = new Date(time);
+        return formatDate(data,'yyyy-MM-dd');
+      }
+    },
     created:function(){
-
+      this.getBookRecord();
     },
     methods: {
       submit(){
@@ -146,8 +141,7 @@
         }
 
       },
-      getBookRecord(){
-
+      addBookToCart(){
         let connect = new Connect()
         axios.post(connect.host+connect.ip.addSaleCar ,{
           account:this.user.userName,
@@ -164,7 +158,21 @@
             }
         })
 
-      }
+      },
+      getBookRecord(){
+        //console.log(this.id)
+        //console.log('-------------------------------')
+        let connect = new Connect()
+        axios.post(connect.host+connect.ip.getAllJudge+"?bookno="+this.id,{
+        }).then(resp=>{
+          this.$message.success(resp.data.message)
+          this.tableData=resp.data.data //由于是数组 在用到的地方使用
+          console.log("-------------------------")
+          console.log(this.tableData)
+        },resp=>{
+          this.$message.error("网络连接失败")
+        })
+      },
     }
   }
 </script>
