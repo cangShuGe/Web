@@ -2,37 +2,13 @@
     <div id="card">
         <el-row  :gutter="20">
             <el-col v-for="index in 4" :key="index" :span="6">
-                <div v-if="index <= all.length" @click="ChangeView(all[index - 1])" class="grid-content bg-purple">
+                <div v-if="index <= all.length && flag" @click="ChangeView(all[index - 1])" class="grid-content bg-purple">
                     <img :v-if="!(typeof(all[index - 1].url) == undefined)" :src="all[index - 1].url">
                     <div style="padding: 14px; text-align: center">
                         <span>{{all[index - 1].bookname}}</span>
                     </div>
                 </div>
             </el-col>
-            <!-- <el-col :span="6" :v-if="hard">
-                <div @click="ChangeView(all[1])" class="grid-content bg-purple">
-                    <img :v-if="!(typeof(all[1].url) == undefined)" :src="all[1].url">
-                    <div style="padding: 14px; text-align: center">
-                        <span>{{all[1].bookname}}</span>
-                    </div>
-                </div>
-            </el-col>
-            <el-col :span="6" :v-if="hard">
-                <div @click="ChangeView(all[2])" class="grid-content bg-purple">
-                    <img :v-if="!(typeof(all[2].url) == undefined)" :src="all[2].url">
-                    <div style="padding: 14px; text-align: center">
-                        <span>{{all[2].bookname}}</span>
-                    </div>
-                </div>
-            </el-col>
-            <el-col :span="6" :v-if="hard" >
-                <div @click="ChangeView(all[3])" class="grid-content bg-purple">
-                    <img :v-if="!(typeof(all[3].url) == undefined)" :src="all[3].url">
-                    <div style="padding: 14px; text-align: center">
-                        <span>{{all[3].bookname}}</span>
-                    </div>
-                </div>
-            </el-col> -->
         </el-row>
 
         <el-row :gutter="20">
@@ -45,41 +21,6 @@
                 </div>
             </el-col>
         </el-row>
-
-        <!-- <el-row  :gutter="20">
-            <el-col :span="6"  :v-if="hard">
-                <div @click="ChangeView(all[4])" class="grid-content bg-purple">
-                    <img :v-if="!(typeof(all[4].url) == undefined)" :src="all[4].url">
-                    <div style="padding: 14px; text-align: center">
-                        <span>{{all[4].bookname}}</span>
-                    </div>
-                </div>
-            </el-col>
-            <el-col :span="6" :v-if="hard" >
-                <div @click="ChangeView(all[5])" class="grid-content bg-purple">
-                    <img :v-if="!(typeof(all[5].url) == undefined)" :src="all[5].url">
-                    <div style="padding: 14px; text-align: center">
-                        <span>{{all[5].bookname}}</span>
-                    </div>
-                </div>
-            </el-col>
-            <el-col :span="6" :v-if="hard">
-                <div @click="ChangeView(all[6])" class="grid-content bg-purple">
-                    <img :v-if="!(typeof(all[6].url) == undefined)" :src="all[6].url">
-                    <div style="padding: 14px; text-align: center">
-                        <span>{{all[6].bookname}}</span>
-                    </div>
-                </div>
-            </el-col>
-            <el-col id='h' :v-if="hard" :span="6" >
-                <div @click="ChangeView(all[7])" class="grid-content bg-purple">
-                    <img :v-if="!(typeof(all[7].url) == undefined)" :src="all[7].url">
-                    <div style="padding: 14px; text-align: center">
-                        <span>{{all[7].bookname}}</span>
-                    </div>
-                </div>
-            </el-col>
-        </el-row> -->
 
         <el-row>
           <el-col :span="6" :offset="6">
@@ -111,20 +52,13 @@ export default {
             // currentPage:0,
             allTotal:1,
             all:[
-              {bookno:'0',  bookname:'0',catalogno: '1', author:'0', publishTime:' ', press:' ', total:0, price:0,resume: ' ',url: ''},
-              {bookno:'0',  bookname:'0',catalogno: '1', author:'0', publishTime:' ', press:' ', total:0, price:0,resume: ' ',url: ''},
-              {bookno:'0',  bookname:'0',catalogno: '1', author:'0', publishTime:' ', press:' ', total:0, price:0,resume: ' ',url: ''},
-              {bookno:'0',  bookname:'0',catalogno: '1', author:'0', publishTime:' ', press:' ', total:0, price:0,resume: ' ',url: ''},
-              {bookno:'0',  bookname:'0',catalogno: '1', author:'0', publishTime:' ', press:' ', total:0, price:0,resume: ' ',url: ''},
-              {bookno:'0',  bookname:'0',catalogno: '1', author:'0', publishTime:' ', press:' ', total:0, price:0,resume: ' ',url: ''},
-              {bookno:'0',  bookname:'0',catalogno: '1', author:'0', publishTime:' ', press:' ', total:0, price:0,resume: ' ',url: ''},
-              {bookno:'0',  bookname:'0',catalogno: '1', author:'0', publishTime:' ', press:' ', total:0, price:0,resume: ' ',url: ''},
-
+              {bookno:'',  bookname:'',catalogno: 0, author:'', publishTime:'', press:'', total:0, price:0,resume: '',url: ''},
             ],
             ite:{bookno:'0',  bookname:'0',catalogno: '1', author:'0', publishTime:' ', press:' ', total:0, price:0,resume: ' ',url: ''},
             currentPage:1,
             connect:new Connect(),
-            handle:false
+            handle:false,
+            flag:true
         }
     },
     computed: {
@@ -172,11 +106,26 @@ export default {
             if(resp.data.status){
               this.allTotal = resp.data.total
               this.all=resp.data.data
+              this.flag = true
+            }else{
+                this.flag = false
+                this.$message.error(resp.data.message) //解决bug的方式，每一类都存储上书籍
+                /*this.all[0].bookno=''
+                this.all[0].bookname=''
+                this.all[0].catalogno= 0
+                this.all[0].author=''
+                this.all[0].publishTime=''
+                this.all[0].press=''
+                this.all[0].total=0
+                this.all[0].price=0
+                this.all[0].resume= ''
+                this.all[0].url= ''*/
             }
           },resp => {
             if(typeof(resp.data.status) == undefined || resp.data.data){
               this.$message.error('网络连接失败！')
             }else{
+              this.flag = false
               this.$message.error(resp.data.message)
             }
           })
@@ -188,6 +137,10 @@ export default {
             if(resp.data.status){
             this.allTotal = resp.data.total
             this.all=resp.data.data
+            this.flag = true
+            }else{
+                this.flag = false
+                this.$message.error(resp.data.message)
             }
           },resp => {
             if(typeof(resp.data.status) == undefined || resp.data.data){

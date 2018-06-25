@@ -61,7 +61,7 @@ export default class Connect{
          emaiDelete: '/admindelusers',//通过邮箱删除账号
          addBookCata:'/addcatalog',
 
-         getAllJudge:'/getAllJudge', //得到这本书所有的书评
+         getAllJudge:'/getAllJudge', //得到这本书的所有评论
 
       }
     }

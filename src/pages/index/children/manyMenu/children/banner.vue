@@ -2,19 +2,19 @@
     <div id="banner">
         <el-carousel type="card" height="300px" trigger="click" :interval="4000">
             <el-carousel-item>
-                <div class="item-content" @click="ChangeView">
+                <div class="item-content" @click="ChangeView(book[0].bookno)">
                     <img :src="book[0].url">
                     <div class="title" target="_blank">{{book[0].bookname}}</div>
                 </div>
             </el-carousel-item>
             <el-carousel-item>
-                <div class="item-content" @click="ChangeView">
+                <div class="item-content" @click="ChangeView(book[1].bookno)">
                     <img :src="book[1].url">
                     <div class="title" target="_blank">{{book[1].bookname}}</div>
                 </div>
             </el-carousel-item>
             <el-carousel-item>
-                <div class="item-content" @click="ChangeView">
+                <div class="item-content" @click="ChangeView(book[2].bookno)">
                     <img :src="book[2].url">
                     <div class="title" target="_blank">{{book[2].bookname}}</div>
                 </div>
@@ -74,8 +74,8 @@ export default {
         }
     },
     methods:{
-      ChangeView(){
-        this.$router.push({name : 'bookBody'})
+      ChangeView(bookno){
+        this.$router.push({path : '/index/bookBody/' + bookno})
       }
     }
 }

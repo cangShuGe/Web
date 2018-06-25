@@ -91,6 +91,9 @@ import { mapState } from 'vuex'
 import Connect from '@/services/service'
 import { postRequest,putRequest,getRequest } from '@/utils/api'
 import cookie from '@/cookie/cookie'
+import store from '@/store/index'
+import router from '@/router/index'
+import md5 from 'js-md5';
 export default {
     name: 'my-header',
     data() {
@@ -121,7 +124,7 @@ export default {
             'user',
             'logs',
             'useronline',
-            'user'
+            'userName'
         ])
     },
     created:function(){
@@ -167,14 +170,35 @@ export default {
             }
         },
         login(){
-          let param = {
-            account:this.form.username,
-            pwd:this.form.password
-          }
-            this.setfalse()
-
+            //this.setfalse()
             let connect = new Connect()
-            connect.loginRequest(this.form)
+            //connect.loginRequest(this.form)
+        axios.post(connect.host + connect.ip.login + '?account='+this.form.username+'&pwd='+md5(this.form.password), {
+      }).then(resp => {
+          console.log("以下是登录信息")
+          console.log(resp);
+          if (resp.data.status) {
+            this.setfalse()
+            this.$message.success(resp.data.message)
+            cookie.setToken("useronline", true);
+            cookie.setToken("userName", this.form.username);
+            store.commit("set_user_name", this.form.username);
+            store.commit("set_user_online", true);
+            // window.alert('登陆成功')
+            this.findPersonMessage(this.form.username);
+          } else {
+            this.$message.error(resp.data.message)
+            cookie.setToken("useronline", false);
+          }
+          // router.go(0)
+        }, resp => {
+          if (resp == null || resp) console.log(resp);
+          var response = { status: false, message: "网络连接中断" };
+          cookie.setToken("useronline", true);
+          console.log(response.message);
+          window.alert(response.message);
+          // router.go(0)
+        });
 
         },
         verify(){
@@ -196,21 +220,24 @@ export default {
 
         },
         register(){
-            this.setfalse()
+            ///this.setfalse()
             let connect = new Connect()
             this.$http.post(connect.host + connect.ip.register,{
               account:this.registerfrom.username,
-              pwd:this.registerfrom.password,
+              pwd:md5(this.registerfrom.password),
               mailbox:this.registerfrom.email,
               member:0,
-              address:'sdfasd',
+              address:'山东省威海市',
               credit:0,
               name:'',
               sex:'',
               birthday:0,
             }).then(resp=>{
               if(resp.data.status){
-                this.$message.success('注册成功')
+                this.setfalse() //不跳转
+                this.$message.success(resp.data.message)
+              }else{
+                  this.$message.error(resp.data.message)
               }
             },resp=>{
               if(typeof(resp.data) === undefined || resp.data === null ){
@@ -255,6 +282,32 @@ export default {
         },
         getBreadcrumb() {
             this.breadcrumb = this.$route.matched.filter(item => item.name)
+        },
+
+        findPersonMessage(userName){
+            let connect = new Connect()
+            postRequest(connect.host + connect.ip.personMessage + '?account='+userName,{
+                account:userName
+            }).then(resp=>{
+                let message = resp.data.data
+                console.log(message)
+                let usermessage ={
+                userName:message.account,
+                // password:message.password,
+                email:message.mailbox,
+                member:message.member,
+                credit:message.credit,
+                name:message.name,
+                sex:message.sex,
+                birthday:message.birthday
+                }
+                console.log(message)
+                console.log(usermessage)
+                cookie.setToken('user',usermessage)
+                router.go(0)
+            },resp=>{
+
+            })
         }
     }
 }
