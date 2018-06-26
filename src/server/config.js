@@ -4,8 +4,8 @@
 const qiniu = require("qiniu");
 
 // 创建上传凭证
-const accessKey = "2dk7Fyb9rbfnoNlkU4k0OS9v-ddsCLEIfdfIOPab";
-const secretKey = "I6yFEbtdh30b9R-Ht0jGNrKjXyBcrM5PrEWMxMrX";
+const accessKey = "RMOsmzr3QNHOjkAxZfuV0jbAV3eKmizDLCvaYHpF";
+const secretKey = "uKncqhiJKgs0ffxo80pQpQgM82h9DxZskTwTsR_A";
 const mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
 const options = {
   scope: "library",

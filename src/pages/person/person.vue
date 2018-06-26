@@ -79,7 +79,7 @@
               <div class="grid-content">
                   <el-form :inline="true" @submit.native.prevent="buyVip">
                     <el-form-item label="会员等级:">
-                      {{formInline.member}}
+                      {{level}}
                     </el-form-item>
                     <el-form-item>
                         <el-input
@@ -163,7 +163,7 @@
                               </el-col>
                             </el-row>
 
-                            <b>评价（不得少于十字）:</b>
+                            <b>评价:</b>
                             <br>
                             <br>
                             <el-input
@@ -403,6 +403,8 @@ import axios from "axios"
 import myHeader from '@/layout/header'
 import { mapState } from 'vuex'
 import Connect from '@/services/service'
+import md5 from 'js-md5'
+import cookie from '@/cookie/cookie'
 export default {
     name: 'person',
     components: { myHeader },
@@ -423,12 +425,13 @@ export default {
             userId:'',
             username:'this.user.userName',
             email:'2916144319@qq.com',
-            sex:'男',
+            sex:'',
             birthday:new Date('Mon Jun 04 2018'),
             member:0,
             password:'',
             credit:223
           },
+          level:0,
           memeber:0,
           saleMessage:[
             {buyTime:'2018-1-1',buyTime1:'2018-1-1',author:'上海市普陀区真北路',bookname:'asdfsd',num:'12',score:0,bookno:'123123124',price:10,judge:''},
@@ -447,7 +450,7 @@ export default {
           }],
           activeName: 'first',
           value:new Array(),
-          remark:new Array(),
+          remark:new Array(""),
           choiceChose:new Array()
         }
     },
@@ -457,12 +460,15 @@ export default {
             'logs',
             'useronline',
             'user',
-            'userName'
+            'userName',
         ])
     },
     created:function(){
       let connect = new Connect()
-      connect.findPersonMessage(this.userName)
+      // console.log("--------------")
+      // console.log(this.user.userName)
+      // console.log("*******************")
+      connect.findPersonMessage(this.user.userName) //初始化获取个人信息
 
       this.formInline.username = this.user.userName
       this.formInline.userId = this.user.userId
@@ -483,6 +489,14 @@ export default {
       this.showMyEbook()
 
       this.showMySaleCar(1)
+
+      if(this.formInline.credit>=0 && this.formInline.credit <= 100){
+        this.level = 1
+      }else if(this.formInline.credit>100 && this.formInline.credit<500){
+        this.level = 2;
+      }else{
+        this.level = 3;
+      }
     },
     methods:{
       showMySaleCar(index){
@@ -595,8 +609,9 @@ export default {
             axios.post(connect.host+connect.ip.buySaleCar + '?account='+this.user.userName+'&buyTime='+new Date() .getTime()+'&num='+this.choiceChose[i].num+'&bookno='+this.choiceChose[i].bookno + '&addtime=' + this.choiceChose[i].addtime,{
 
         }).then(resp=>{
-          if(num === (i + 1)){
+          if(num === i){
             this.$message.error('购买成功! 请等待快递')
+            this.$router.go(0)
           }
         },resp=>{
             if(!resp.data){
@@ -628,7 +643,9 @@ export default {
             axios.post(connect.host+connect.ip.deleteSaleCar + '?account='+this.user.userName+'&bookno='+this.choiceChose[i].bookno + '&addtime=' + this.choiceChose[i].addtime,{
 
             }).then(resp=>{
-            if(num === (i + 1)){
+            if(num === i){
+              //this.activeName = 'fourth'
+             // store.commit('set_activeName', 'fourth');
               this.$message.error('删除成功!')
               this.$router.go(0)
             }
@@ -668,10 +685,18 @@ export default {
       },
       changePwd(){
         let connect = new Connect()
-        axios.post(connect.host + connect.ip.changePwd + '?account='+this.formInline.username+'&pwd=' + this.formChangePwd.oldPwd + '&newPwd='+ this.formChangePwd.newPwd,{
-
+        axios.post(connect.host + connect.ip.changePwd + '?account='+this.formInline.username+'&pwd=' + md5(this.formChangePwd.oldPwd) + '&newPwd='+ md5(this.formChangePwd.newPwd),{
           }).then(resp=>{
-          this.$message.success(resp.data.message)
+            if(resp.data.status){
+              this.$message.success(resp.data.message)
+              this.$store.commit('set_user_online',false)
+              this.$store.commit('set_user','')
+              cookie.removeall()
+              this.$router.push('/index/realbook/1')
+              this.$message.warning("请重新登录")
+            }else{
+              this.$message.error(resp.data.message)
+            }
         },resp=>{
           if(typeof(resp.data) === undefined || resp.data === null ){
                 this.$message.error('网络连接失败')
@@ -706,7 +731,14 @@ export default {
               sex:this.formInline.sex,
               birthday:this.formInline.birthday.getTime(),
         }).then(resp=>{
-          this.$message.success(resp.data.message)
+          if(resp.data.status){
+            this.$message.success(resp.data.message)
+            //this.activeName="second"
+            this.$router.go(0)
+            //location.reload()
+          }else{
+            this.$message.error(resp.data.message)
+          }
         },resp=>{
           if(typeof(resp.data) === undefined || resp.data === null ){
                 this.$message.error('网络连接失败')
@@ -737,12 +769,15 @@ export default {
         let connect = new Connect()
         axios.post(connect.host + connect.ip.submitRemark
         + '?account=' + this.user.userName + '&bookno='
-        +row.bookno + '&buyTime=' + row.buyTime + '&judge'
+        +row.bookno + '&buyTime=' + row.buyTime + '&judge='
         +this.remark[index] +'&score='+this.value[index],{
 
         }).then(resp=>{
+          console.log("-------")
           row.score = this.value[index],
           row.judge = this.remark[index]
+          console.log(this.remark[index])
+          console.log("-------")
           this.$message.success('提交评论成功')
         },resp=>{
           if(!resp.data){

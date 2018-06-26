@@ -137,7 +137,10 @@ export default {
           axios.post(connect.host + connect.ip.deleteKinds + '?catalogno=' +this.form.catalogno,{}).then(resp=>{
 
             if(resp.data.status){
-              this.$message.alert('删除成功')
+              this.$message.success('删除成功')
+              this.$router.go(0)
+            }else{
+              this.$message.error(resp.data.message)
             }
 
           },resp=>{

@@ -218,10 +218,11 @@ export default class Connect{
 
     findPersonMessage(userName){
       postRequest(this.host + this.ip.personMessage + '?account='+userName,{
-        account:userName
       }).then(resp=>{
         let message = resp.data.data
-        console.log(message)
+        // console.log("---------------------")
+        // console.log(message)
+        // console.log("************************")
         let usermessage ={
           userName:message.account,
           // password:message.password,
@@ -232,10 +233,12 @@ export default class Connect{
           sex:message.sex,
           birthday:message.birthday
         }
-        console.log(message)
-        console.log(usermessage)
+        // console.log("**************")
+        // console.log(message)
+        // console.log(usermessage)
+        // console.log("**************")
         cookie.setToken('user',usermessage)
-        router.go(0)
+       // router.go(0)不进行跳转
       },resp=>{
 
       })

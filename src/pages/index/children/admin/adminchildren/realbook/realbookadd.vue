@@ -108,7 +108,7 @@ export default {
           ],
           kindsTotal:0,
           token: {},
-          // 七牛云的上传地址，根据自己所在地区选择，我这里是华南区
+          // 七牛云的上传地址，根据自己所在地区选择，我这里是华东区
           domain: 'https://up.qiniup.com',
           // 这是七牛云空间的外链默认域名
           qiniuaddr: 'paxf9gsa8.bkt.clouddn.com',
@@ -245,9 +245,10 @@ export default {
         axios.post(connect.host + connect.ip.addBook,para).then(resp=>{
 
           if(resp.data.status){
-            this.$message.alert('添加成功!')
+            this.$message.success('添加成功!')
+          }else{
+            this.$message.error(resp.data.message)
           }
-
         },resp=>{
 
           if(typeof(resp.data) !== undefined || resp.data == null){

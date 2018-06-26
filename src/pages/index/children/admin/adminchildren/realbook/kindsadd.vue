@@ -60,6 +60,7 @@ export default {
         }).then(resp=>{
           if(resp.data.status){
             this.$message.success('添加成功')
+            this.$router.go(0)
           }
           
         },resp=>{
