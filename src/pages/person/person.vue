@@ -1,5 +1,5 @@
 <template>
-  <div id="person">
+  <div id="person" class="hahaha">
     <el-main>
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="用户信息" name="first">
@@ -152,7 +152,7 @@
                         label="评分">
                         <template slot-scope="scope">
                           <div v-if="scope.row.score === null || scope.row.score === 0">
-                            <span type="text">请评价</span>
+                            <span type="text">请评分</span>
                             <el-select style="width:70px" v-model="value[scope.$index]" placeholder="请选择分数">
                               <el-option
                                 v-for="item in 5"
@@ -161,11 +161,29 @@
                                 :value="item">
                               </el-option>
                             </el-select>
-                            <el-button type="success" round  size="small" @click="remark(scope.$index,scope.row)">提交评价</el-button>
+                            <el-button type="success" round  size="small" @click="remark(scope.$index,scope.row)">提交评分</el-button>
                           </div>
                           <span v-else>{{scope.row.score}}</span>
                         </template>
                     </el-table-column>
+
+                    <el-table-column 
+                        width="50"
+                        prop="judge"
+                        label="评价"
+                        type="expand"
+                    >
+                    <template slot-scope="scope">
+                          <div v-if="scope.row.judge === null || scope.row.judge === ''">
+                            <span type="text">请评价</span>
+                            <el-input placeholder="请输入您的评价内容" v-model="inputJudge" clearable></el-input>
+                            <el-button type="success" round  size="small" @click="submitJudge(scope.$index,scope.row)">提交评价</el-button>
+                          </div>
+                          <span v-else>{{scope.row.judge}}</span>
+                        </template>
+
+                    </el-table-column>
+                    
                 </el-table>
               </div>
             </el-col>
@@ -728,8 +746,8 @@ export default {
           },
           memeber:0,
           saleMessage:[
-            {buyTime:'2018-1-1',buyTime1:'2018-1-1',author:'上海市普陀区真北路',bookname:'asdfsd',num:'12',score:0,bookno:'123123124',price:10},
-            {buyTime:'2018-1-1',buyTime1:'2018-1-1',author:'上海市普陀区真北路',bookname:'asdfsd',num:'12',score:0,bookno:'123123',price:10},
+            {buyTime:'2018-1-1',buyTime1:'2018-1-1',author:'上海市普陀区真北路',bookname:'asdfsd',num:'12',score:0,bookno:'123123124',price:10,judge:''},
+            {buyTime:'2018-1-1',buyTime1:'2018-1-1',author:'上海市普陀区真北路',bookname:'asdfsd',num:'12',score:0,bookno:'123123',price:10,judge:''},
           ],
           saleCar:[
             {bookno:'12987122',bookname:'好滋好味鸡蛋仔',catalogno:'江浙小吃、小吃零食',kind:'荷兰优质淡奶，奶香浓而不腻',author:'上海市普陀区真北路',publishTime:'王小虎夫妻店',press:'10333',resume:'sdfasdf',url:'sdfsadfas',num:3,price:4},
@@ -744,7 +762,8 @@ export default {
           }],
           activeName: 'first',
           value:new Array(),
-          choiceChose:new Array()
+          choiceChose:new Array(),
+          inputJudge:'' //评价的内容
         }
     },
     computed: {
@@ -1047,10 +1066,28 @@ export default {
 
         })
         console.log(this.value)
+      },
+      submitJudge(index,row){
+        //提交评价
+        console.log(index)
+        console.log("这是我的评价哦")
       }
     }
 }
 </script>
+<style>
+.hahaha{
+  width: 100%;
+  height: 1200px;
+  /*background-color: 	rgb(179, 255, 0);
+  background-position: center center;
+  background-repeat:  repeat;
+  background-image: 'static/uncleLian.jpg';*/
+  background: url('/static/back2.jpg') center center no-repeat ;
+  /*background-size: 1000px auto;*/
+}
+</style>
+
 <style lang='stylus'>
 #person {
     .el-row {
