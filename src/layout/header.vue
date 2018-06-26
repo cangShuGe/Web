@@ -9,8 +9,13 @@
             </el-aside>
             <!-- <el-main> -->
             <div class="header-right">
+                 <div class="right-item">
+                <el-input placement="top-end" max="20" size="mini" :clearable="true" placeholder="按书名作者查询电子书" v-model.trim="targetEbook" @keyup.enter.native="searchEbook">
+                  <el-button @click="searchEbook" slot="append" icon="el-icon-search"></el-button>
+                </el-input>
+                 </div>
               <div class="right-item">
-                <el-input placement="top-end" max="20" size="mini" :clearable="true" placeholder="请输入内容" v-model="target">
+                <el-input placement="top-end" max="20" size="mini" :clearable="true" placeholder="按书名或作者查询书籍" v-model.trim="target" @keyup.enter.native="search">
                   <el-button @click="search" slot="append" icon="el-icon-search"></el-button>
                 </el-input>
               </div>
@@ -99,6 +104,7 @@ export default {
     data() {
         return {
             target:'',
+            targetEbook:'',
             // Online:useronline,
             breadcrumb: '',
             pwdType: 'password',
@@ -149,7 +155,16 @@ export default {
         search(){
           if(this.target){
             this.$router.push({path:'/index/search/' + this.target})
+          }else{
+              this.$message.error("搜索条件不能为空")
           }
+        },
+        searchEbook(){
+            if(this.targetEbook){
+                this.$router.push({path:'/index/searchEbook/'+this.targetEbook})
+            }else{
+                this.$message.error("搜搜电子书籍的条件不能为空")
+            }
         },
         passwordToggle() {
             if (this.pwdType === 'password') {

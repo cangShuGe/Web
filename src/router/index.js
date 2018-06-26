@@ -24,6 +24,7 @@ const adminRealBook = () => import('@/pages/index/children/admin/adminchildren/a
 const adminEBook = () => import('@/pages/index/children/admin/adminchildren/adminEbook')
 // const adminEBook = () => import('@/pages/index/children/admin/adminchildren/adminRealBook')
 const searchResult = () => import('@/pages/search/search')
+const searchEbookResult = () => import('@/pages/search/searchEbook')
 
 Vue.use(Router)
 
@@ -60,6 +61,12 @@ export const sideRoutes = [
             name:'searchResult',
             path:'/index/search/:target',
             component: searchResult,
+            props:true
+          },
+          {
+            name:'searchEbookResult',
+            path:'/index/searchEbook/:target',
+            component: searchEbookResult,
             props:true
           }
         ]

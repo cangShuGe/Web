@@ -18,7 +18,7 @@
                     <b>书籍类型：电子书</b>
                     <br/>
                     <br/>
-                    <el-tag @click="download(item.press)">下载本书</el-tag>
+                    <el-button type="success" round @click="download(item.bookno,item.price)">添加到我的书架</el-button>
                   </div>
                   <div v-else>
                     <b>书籍类型：实体书</b>
@@ -62,20 +62,18 @@ import { mapState } from 'vuex'
 export default {
     name: 'card',
     created:function(){
-      this.getRealBooks(1)
+      this.getEbooks(1)
     },
     data() {
         return {
             items:[
-                {bookname:'',resume:'',url:'',ebook:false}
+                {bookno:0,bookname:'',resume:'',url:'',press:'',ebook:true}
             ],
             ite:{bookno:'0',  bookname:'0',catalogno: '1', author:'0', publishTime:' ', press:' ', total:0, price:0,resume: ' ',url: ''},
             currentPage:1,//当前页数
             pageSize:10,
             totalItems:0,
             connect:new Connect(),
-            //total:1,
-            Etotal:1,
             flag: true
         }
     },
@@ -91,12 +89,14 @@ export default {
         }
       },
       ...mapState([
-        'useronline'
+        'useronline',
+        'userName',
+        'user'
       ])
     },
     watch:{ //监听路由或变量值变化
       $route() {
-            this.getRealBooks(1)
+            this.getEbooks(1)
         }
     },
     methods:{
@@ -104,49 +104,44 @@ export default {
       gobuy(bookno){
         this.$router.push({path:'/index/bookBody/' + bookno })
       },
-      download(url){
+      download(bookno,price){
+          let connect = new Connect
         if(this.useronline){
-
+            // console.log(this.useronline)
+            // console.log("**********************")
+            // console.log(this.user.userName) --账户名称实际上是这个
+            this.$confirm('是否要下载？如果您不是会员，将要花费' + price + '积分').then(_=>{
+            axios.post(connect.host+connect.ip.downloadBooks+'?account='+this.user.userName+'&bookno='+bookno,{    
+            }).then(resp=>{
+                if(resp.data.status){
+                    this.$message.success(resp.data.message+"请到我的书架中查看已添加的电子书")
+                }else{
+                    this.$message.error(resp.data.message)
+                }
+            },resp=>{
+                console.log(this.user.userName)
+                console.log("********")
+                this.$message.error("网络连接失败，请检查你的网络")
+            })
+        }).catch(_=>{
+    })
         }else{
-          this.$message.warning('请登录您账号')
+          this.$message.warning('请先登录您的账号')
         }
       },
-      getRealBooks(index){
-        //console.log("************************")
-        //console.log(this.target)
-       // console.log("*****************************")
+      getEbooks(index){
         let connect = this.connect
-        axios.post(connect.host + connect.ip.searchBooks + '?name='+this.target+'&pageNum='+index+'&pageSize='+this.pageSize,{
+        axios.post(connect.host + connect.ip.searchEBooks + '?name='+this.target+'&pageNum='+index+'&pageSize='+this.pageSize,{
         }).then(resp=>{
           if(resp.data.status){
             this.flag = true
             console.log(resp.data)
-            /*if(index === 1){
-              this.total = 1
-            }*/
             this.items= resp.data.data
             this.totalItems = resp.data.total //总的记录数
-            /*if(total === index && index === 1){
-              this.total = 1
-            }else{
-              this.total = total
+            let item = 0
+            for(;item<this.items.length;item++){
+                this.items[item]['ebook'] = true
             }
-            this.totalItems = items.length//this.total * 10*/
-
-            //if(items){
-              let item = 0
-              for(;item<this.items.length;item++){
-                this.items[item]['ebook'] = false
-              }
-              /*this.items = items
-            }else{
-              this.items = []
-            }*/
-            //console.log(this.Etotal)
-            //if(index <= this.Etotal){
-              //this.getEBooks(index)
-            //}
-
           }else{
             this.flag = false
             this.$message.error(resp.data.message)
@@ -157,58 +152,16 @@ export default {
           }else{
             // this.$message.error(resp.data.message)
           }
-          /*this.total = 0
-          this.items = []
-          if(index <= this.Etotal){
-            this.getEBooks(index)
-          }*/
         })
 
       },
-      /*getEBooks(index){
-
-        let connect = this.connect
-        axios.post(connect.host + connect.ip.searchEBooks + '?name='+this.target+'&pageNum='+index+'&pageSize=5',{
-
-        }).then(resp=>{
-          console.log(resp)
-          let items = resp.data.data
-
-          if(index === 1){
-            this.Etotal = 1
-          }
-          let total = resp.data.total
-          if(total === index && index === 1){
-            this.Etotal = 1
-
-          }else{
-            this.Etotal = total
-          }
-          if(this.total < this.Etotal){
-            this.totalItems = this.Etotal*10
-          }
-          if(items){
-            let item = 0
-            for(;item < items.length;item++){
-              items[item]['ebook'] = true
-            }
-            this.items.push(items)
-          }
-        },resp=>{
-          if(typeof(resp.data.status) == undefined || resp.data.data){
-              this.$message.error('网络连接失败！')
-          }else{
-            // this.$message.error(resp.data.message)
-          }
-        })
-      },*/
       handleSizeChange(val){//val表示的是当前页面大小
           this.pageSize = val
-          this.getRealBooks(this.currentPage)
+          this.getEbooks(this.currentPage)
       },
       handleCurrentChange(val){ //val表示的是当前页数
           this.currentPage=val
-          this.getRealBooks(val)
+          this.getEbooks(val)
       }
     }
 }

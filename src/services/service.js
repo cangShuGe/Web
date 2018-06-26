@@ -62,6 +62,7 @@ export default class Connect{
          addBookCata:'/addcatalog',
 
          getAllJudge:'/getAllJudge', //得到这本书的所有评论
+         downloadBooks: '/downloadBooks',//下载电子书 
 
       }
     }

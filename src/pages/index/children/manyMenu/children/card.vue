@@ -155,12 +155,31 @@ export default {
       ChangeView(book){
         if(this.ebook === true){
 
-          this.$confirm('是否要下载？将要花费' + book.price + '积分').then(_=>{
-              window.open(book.press)
-          }).catch(_=>{
 
-          })
-
+          let connect = new Connect
+          if(this.useronline){
+            //console.log(this.useronline)
+            //console.log("**********************")
+            //console.log(this.user.userName) ///--账户名称实际上是这个
+            this.$confirm('是否要下载？如果您不是会员，将要花费' + book.price + '积分').then(_=>{
+            axios.post(connect.host+connect.ip.downloadBooks+'?account='+this.user.userName+'&bookno='+book.bookno,{    
+            }).then(resp=>{
+                if(resp.data.status){
+                  //window.open(book.press)
+                  this.$message.success(resp.data.message+"请到我的书架中查看已添加的电子书")
+                }else{
+                    this.$message.error(resp.data.message)
+                }
+            },resp=>{
+                console.log(this.user.userName)
+                console.log("********")
+                this.$message.error("网络连接失败，请检查你的网络")
+            })
+            }).catch(_=>{
+            })
+        }else{
+          this.$message.warning('请先登录您的账号')
+        }
         }else{
           this.$router.push({path : '/index/bookBody/' + book.bookno })
         }
