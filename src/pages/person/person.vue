@@ -197,7 +197,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column
+                    <!--<el-table-column
                         width="50"
                         prop="judge"
                         label="评价"
@@ -212,7 +212,7 @@
                           <span v-else>{{scope.row.judge}}</span>
                         </template>
 
-                    </el-table-column>
+                    </el-table-column>-->
 
                 </el-table>
               </div>
