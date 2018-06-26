@@ -16,6 +16,7 @@ const state = {
         'member':0,
         'credit':223
     }, // 用户信息
+    admin:false,
     userName:'',
     useronline:true,
 }
@@ -61,6 +62,9 @@ const mutations = {
     },
     set_user_name(state,value){
       state.userName = value
+    },
+    set_admin(state,val){
+      state.admin = val
     }
 }
 

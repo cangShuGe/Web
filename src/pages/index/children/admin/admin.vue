@@ -16,9 +16,29 @@
 import myHeader from '@/layout/header'
 import mySide from '@/layout/adminside'
 import Connect from '@/services/service'
+import { mapState } from 'vuex'
 export default {
     name: 'admin',
     components: { myHeader, mySide },
+    created:function(){
+      if(this.admin === true){
+
+      }else{
+        this.$router.go(-1)
+      }
+    },
+    destroyed:function(){
+      this.$store.commit('set_admin',false)
+    },
+    computed:{
+      ...mapState([
+            'user',
+            'logs',
+            'useronline',
+            'userName',
+            'admin'
+        ])
+    },
     data() {
         return {
 

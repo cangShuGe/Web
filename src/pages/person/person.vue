@@ -27,7 +27,7 @@
               <div class="grid-content">
                   <el-form :inline="true" :model="formInline" @submit.native.prevent="verifyChangeMessage" label-width="80px">
               <el-form-item label="用户名:">
-                  <el-input v-model="formInline.username" placeholder="用户名不能为空" auto-complete='off'/>
+                  <el-input :disabled="true" v-model="formInline.username" placeholder="用户名不能为空" auto-complete='off'/>
               </el-form-item>
               <el-form-item label="邮箱:">
                   <el-input :disabled="true" v-model="formInline.email" placeholder="邮箱不能为空" auto-complete='off'/>
@@ -109,20 +109,18 @@
             </el-col>
             </el-row>
           <el-row >
-            <el-col :span="4">
+            <el-col :span="3">
                 <div class="grid-content"></div>
             </el-col>
 
-            <el-col :span="16">
+            <el-col :span="18">
               <div class="grid-content">
                 <el-table placement="center"
                 border
-                height="400"
                 :data="saleMessage"
                 style="width: 100%">
                     <el-table-column
                         prop="buyTime1"
-                        fixed
                         label="日期"
                         width="90">
                     </el-table-column>
@@ -147,27 +145,59 @@
                         label="购买数量">
                     </el-table-column>
                     <el-table-column
-                        width="222"
-                        prop="score"
-                        label="评分">
-                        <template slot-scope="scope">
-                          <div v-if="scope.row.score === null || scope.row.score === 0">
-                            <span type="text">请评分</span>
-                            <el-select style="width:70px" v-model="value[scope.$index]" placeholder="请选择分数">
-                              <el-option
-                                v-for="item in 5"
-                                :key="item"
-                                :label="item+'分'"
-                                :value="item">
-                              </el-option>
-                            </el-select>
-                            <el-button type="success" round  size="small" @click="remark(scope.$index,scope.row)">提交评分</el-button>
+                      type="expand"
+                      label="评价">
+                        <template slot-scope="props">
+                          <div v-if="props.row.score === null || props.row.score === 0">
+                            <!-- <span type="text">请评价</span> -->
+                            <h3>编写评价</h3>
+                            <el-row>
+                              <el-col :span="2" :offset="1">
+                                <b>评分：</b>
+                              </el-col>
+                              <el-col :span="12" :offset="2">
+                                <el-rate
+                                v-model="value[props.$index]"
+                                show-text>
+                                </el-rate>
+                              </el-col>
+                            </el-row>
+
+                            <b>评价（不得少于十字）:</b>
+                            <br>
+                            <br>
+                            <el-input
+                            type="textarea"
+                            :autosize="false"
+                            resize="none"
+                            :rows="5"
+                            placeholder="请输入内容"
+                            v-model="remark[props.$index]">
+                            </el-input>
+                            <br>
+                            <br>
+                            <el-row>
+                              <el-col :span="4" :offset="20">
+                                <el-button type="success" @click="submitRemark(props.row,props.$index)" >发表评论</el-button>
+                              </el-col>
+                            </el-row>
                           </div>
-                          <span v-else>{{scope.row.score}}</span>
+                          <div v-else>
+                            <h3>评分</h3>
+                            <el-rate
+                              v-model="props.row.score"
+                              disabled
+                              show-score
+                              text-color="#ff9900"
+                              score-template="{value}">
+                            </el-rate>
+                            <h3>评价</h3>
+                            <p>{{props.row.judge}}</p>
+                          </div>
                         </template>
                     </el-table-column>
 
-                    <el-table-column 
+                    <el-table-column
                         width="50"
                         prop="judge"
                         label="评价"
@@ -183,11 +213,11 @@
                         </template>
 
                     </el-table-column>
-                    
+
                 </el-table>
               </div>
             </el-col>
-            <el-col :span="4">
+            <el-col :span="3">
               <div class="grid-content"></div>
             </el-col>
           </el-row>
@@ -203,7 +233,6 @@
                 <div class="grid-content">
                   <el-table placement="center"
                 border
-                height="400"
                 :data="EbookMessage"
                 style="width: 100%">
                     <el-table-column
@@ -260,12 +289,11 @@
               <div class="grid-content">
                 <el-table
               border
-              height="400"
               @selection-change="handleSelectionChange"
               :data="saleCar"
               style="width: 100%">
               <el-table-column
-                width="322"
+                width="250"
                 fixed
                 label="书籍名称"
                 prop="bookname">
@@ -289,7 +317,7 @@
               </el-table-column>
               <el-table-column
                 label="书籍简介"
-                width="90"
+                width="222"
                 prop="resume">
               </el-table-column>
               <el-table-column
@@ -347,6 +375,10 @@
       </el-tab-pane>
     </el-tabs>
     </el-main>
+    <br>
+    <br>
+    <br>
+    <br>
 
     <el-dialog title="更改密码" :visible.sync="changePwdDialog">
             <el-form :model="formChangePwd" @submit.native.prevent="verifyPwd">
@@ -365,353 +397,6 @@
             </el-form>
           </el-dialog>
   </div>
-    <!--<div id="person">
-        <el-main>
-          <el-row>
-            <el-col :span="4">
-                <div class="grid-content">
-                </div>
-            </el-col>
-            <el-col :span="12">
-                <div class="grid-content">
-                  <br>
-                  <h2>用户信息：</h2>
-                </div>
-            </el-col>
-          </el-row>
-
-
-          <el-row >
-            <el-col :span="4">
-                <div class="grid-content">
-                </div>
-            </el-col>
-
-            <el-col :span="16">
-              <div class="grid-content">
-                  <el-form :inline="true" :model="formInline" @submit.native.prevent="verifyChangeMessage" label-width="80px">
-              <el-form-item label="用户名:">
-                  <el-input v-model="formInline.username" placeholder="用户名不能为空" auto-complete='off'/>
-              </el-form-item>
-              <el-form-item label="邮箱:">
-                  <el-input :disabled="true" v-model="formInline.email" placeholder="邮箱不能为空" auto-complete='off'/>
-              </el-form-item>
-              <el-form-item label="性别:">-->
-                  <!-- <el-button size="small" :disabled="true" v-model="formInline.sex" auto-complete='off'>{{formInline.sex}} </el-button> -->
-                  <!--<el-select v-model="formInline.sex" placeholder="请选择性别">
-                    <el-option
-                      label="男"
-                      value="男">
-                    </el-option>
-                    <el-option
-                      label="女"
-                      value="女">
-                    </el-option>
-                  </el-select>
-              </el-form-item>-->
-              <!-- <br> -->
-              <!--<el-form-item label="生日：">
-                <div class="block">
-
-                  <el-date-picker
-                    v-model="formInline.birthday"
-                    :value="formInline.birthday"
-                    type="date"
-                    format="yyyy 年 MM 月 dd 日"
-                    placeholder="选择日期">
-                  </el-date-picker>
-                </div>
-              </el-form-item>
-              <el-form-item label="积分：">
-                {{formInline.credit}}
-              </el-form-item>
-
-              <el-form-item>
-                  <el-input class="login_btn login_inputColor" type="submit" value="修改" />
-              </el-form-item>
-          </el-form>
-              </div>
-            </el-col>
-            <el-col :span="4">
-              <div class="grid-content"></div>
-            </el-col>
-          </el-row>
-
-          <el-row>
-            <el-col :span="4">
-              <div class="grid-content"></div>
-            </el-col>
-              <el-col :span="10">
-              <div class="grid-content">
-                  <el-form :inline="true" @submit.native.prevent="buyVip">
-                    <el-form-item label="会员等级:">
-                      {{formInline.member}}
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input
-                          v-if="formInline.member === '您还不是会员'"
-                          class="login_btn login_inputColor" type="submit" value="升级会员" />
-                    </el-form-item>
-                  </el-form>
-              </div>
-            </el-col>
-            <el-col :span="10">
-              <div class="grid-content">
-                <b>隐私信息修改：</b>
-                <el-button type="warning" @click="changePwdDialog = true" >修改密码</el-button>
-              </div>
-            </el-col>
-            </el-row>
-          <el-row>
-              <el-col :span="4">
-              <div class="grid-content"></div>
-            </el-col>
-            <el-col :span="4">
-              <div class="grid-content">
-                <h2>购买记录</h2>
-              </div>
-            </el-col>
-            </el-row>
-          <el-row >
-            <el-col :span="4">
-                <div class="grid-content"></div>
-            </el-col>
-
-            <el-col :span="16">
-              <div class="grid-content">
-                <el-table placement="center"
-                border
-                height="400"
-                :data="saleMessage"
-                style="width: 100%">
-                    <el-table-column
-                        prop="buyTime1"
-                        fixed
-                        label="日期"
-                        width="90">
-                    </el-table-column>
-                    <el-table-column
-                        prop="bookname"
-                        label="书籍名称"
-                        width="300">
-                    </el-table-column>
-                    <el-table-column
-                      label="书籍作者"
-                      width="180"
-                      prop="author">
-                    </el-table-column>
-                    <el-table-column
-                      label="单价"
-                      width="180"
-                      prop="price">
-                    </el-table-column>
-                    <el-table-column
-                        width="80"
-                        prop="num"
-                        label="购买数量">
-                    </el-table-column>
-                    <el-table-column
-                        width="222"
-                        prop="score"
-                        label="评分">
-                        <template slot-scope="scope">
-                          <div v-if="scope.row.score === null || scope.row.score === 0">
-                            <span type="text">请评价</span>
-                            <el-select style="width:70px" v-model="value[scope.$index]" placeholder="请选择分数">
-                              <el-option
-                                v-for="item in 5"
-                                :key="item"
-                                :label="item+'分'"
-                                :value="item">
-                              </el-option>
-                            </el-select>-->
-                            <!-- <br /><br /> -->
-                            <!--<el-button type="success" round  size="small" @click="remark(scope.$index,scope.row)">提交评价</el-button>
-                          </div>
-                          <span v-else>{{scope.row.score}}</span>
-                        </template>
-                    </el-table-column>
-                </el-table>
-              </div>
-            </el-col>
-            <el-col :span="4">
-              <div class="grid-content"></div>
-            </el-col>
-          </el-row>
-            <el-row>
-              <el-col :span="4">
-              <div class="grid-content"></div>
-            </el-col>
-            <el-col :span="4">
-              <div class="grid-content">
-                <h2>购物车</h2>
-              </div>
-            </el-col>
-            </el-row>
-            <el-row >
-            <el-col :span="4">
-                <div class="grid-content"></div>
-            </el-col>
-
-            <el-col :span="16">
-              <div class="grid-content">
-                <el-table
-              border
-              height="400"
-              @selection-change="handleSelectionChange"
-              :data="saleCar"
-              style="width: 100%">
-              <el-table-column
-                width="322"
-                fixed
-                label="书籍名称"
-                prop="bookname">
-              </el-table-column>
-              <el-table-column
-                label="书籍作者"
-                width="180"
-                prop="author">
-              </el-table-column>
-              <el-table-column
-                label="书籍数量"
-                width="90">
-                <template slot-scope="scope">-->
-                  <!-- <el-button type="warning" icon="el-icon-minus" circle></el-button> -->
-                  <!-- <el-col type="flex" :span="1" class="row-bg"> -->
-                  <!--<el-input type="number" v-model="scope.row.num" :min="1" :max="1000000" class="demo-input-suffix" :value="scope.row.num" size="small"></el-input>-->
-                  <!-- </el-col> -->
-                  <!-- <el-button type="warning" icon="el-icon-plus" circle></el-button> -->
-                <!--</template>
-              </el-table-column>
-              <el-table-column
-                label="单价"
-                width="90"
-                prop="price">
-              </el-table-column>
-              <el-table-column
-                label="书籍简介"
-                width="90"
-                prop="resume">
-              </el-table-column>-->
-                <!-- label="是否购买" -->
-                <!-- width="50" -->
-              <!--<el-table-column
-                type="selection">
-              </el-table-column>
-            </el-table>
-              </div>
-            </el-col>
-            <el-col :span="4">
-              <div class="grid-content"></div>
-            </el-col>
-          </el-row>
-          <el-row>
-              <el-col :span="6">
-                <div class="grid-content"></div>
-              </el-col>
-              <el-col :span="4">
-                <div class="grid-content">
-                  <b>当前选购的书籍总数：{{booksum}}</b>
-                </div>
-              </el-col>
-              <el-col :span="4">
-                <div class="grid-content"></div>
-              </el-col>
-              <el-col :span="4">
-                <div class="grid-content">
-                  <b>当前选购的书籍价格：{{moneySum}}</b>
-                </div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content"></div>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="6">
-                <div class="grid-content"></div>
-              </el-col>
-              <el-col :span="3">
-                <div class="grid-content">
-                  <el-button size="large" @click="buyAll" type="success">购买</el-button>
-                </div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content"></div>
-              </el-col>
-              <el-col :span="3">
-                <div class="grid-content">
-                  <el-button @click="deleteRow" size="large" type="danger">删除</el-button>
-                </div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content"></div>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="4"><div class="grid-content"></div></el-col>
-              <el-col :span="12"><div class="grid-content"><h2>您拥有的电子书</h2></div></el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="4"><div class="grid-content"></div></el-col>
-              <el-col :span="16">
-                <div class="grid-content">
-                  <el-table placement="center"
-                border
-                height="400"
-                :data="EbookMessage"
-                style="width: 100%">
-                    <el-table-column
-                        fixed
-                        prop="bookname"
-                        label="书籍名称"
-                        width="300">
-                    </el-table-column>
-                    <el-table-column
-                      label="作者"
-                      width="180"
-                      prop="author">
-                    </el-table-column>
-                    <el-table-column
-                        width="80"
-                        prop="price"
-                        label="花费积分">
-                    </el-table-column>
-                    <el-table-column
-                        width="210"
-                        prop="resume"
-                        label="简介">
-                    </el-table-column>
-                    <el-table-column
-                    width="100"
-                        label="">
-                        <template slot-scope="scope">
-                          <el-button circle icon="el-icon-download" @click="downloadEbook(scope.$index,scope.row)">下载</el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
-                </div>
-              </el-col>
-            </el-row>
-            <br>
-        </el-main>-->
-
-        <!--<el-dialog title="更改密码" :visible.sync="changePwdDialog">
-            <el-form :model="formChangePwd" @submit.native.prevent="verifyPwd">
-              <el-form-item>
-                <el-input placeholder="旧密码" type="password" v-model="formChangePwd.oldPwd" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-input placeholder="新密码" type="password" v-model="formChangePwd.newPwd" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-input placeholder="确认新密码" type="password" v-model="formChangePwd.ensure" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-input class="login_btn login_inputColor" type="submit" value="确认修改密码" />
-              </el-form-item>
-            </el-form>
-          </el-dialog>
-    </div>-->
 </template>
 <script>
 import axios from "axios"
@@ -762,8 +447,8 @@ export default {
           }],
           activeName: 'first',
           value:new Array(),
-          choiceChose:new Array(),
-          inputJudge:'' //评价的内容
+          remark:new Array(),
+          choiceChose:new Array()
         }
     },
     computed: {
@@ -776,7 +461,9 @@ export default {
         ])
     },
     created:function(){
-      console.log(this.user)
+      let connect = new Connect()
+      connect.findPersonMessage(this.userName)
+
       this.formInline.username = this.user.userName
       this.formInline.userId = this.user.userId
       this.formInline.birthday = new Date(this.user.birthday)
@@ -834,6 +521,7 @@ export default {
         axios.post(connect.host+connect.ip.showMyEbook + '?account='+this.user.userName,{
 
         }).then(resp=>{
+          console.log('ebook')
           console.log(resp.data.data)
           this.EbookMessage = resp.data.data
         },resp=>{
@@ -865,6 +553,7 @@ export default {
         axios.post(connect.host+connect.ip.showMyBuy + '?account='+this.user.userName,{
 
         }).then(resp=>{
+          console.log('record')
           console.log(resp.data.data)
           this.saleMessage = resp.data.data
           for(var i=0;i<this.saleMessage.length;i++){
@@ -881,8 +570,7 @@ export default {
         })
       },
       downloadEbook(index,row){
-        let connect = new Connect()
-        this.formInline.email = connect.downloadEbook()
+        window.open(row.press)
       },
       sumMoney(){
         if(this.choiceChose.length == 0){
@@ -1045,33 +733,36 @@ export default {
         }
         return true
       },
-      remark(index,row){
-        this.$confirm('您只能打一次分数，确定要提交吗').then(_=>{
-          row.score = this.value[index]
-          let connect = new Connect()
-          //评分
-          axios.post(connect.host + connect.ip.userRemark + '?account='+this.formInline.username+'&buyTime=' + row.buyTime + '&bookno='+row.bookno +'&score='+row.score,{
+      submit(row,index){
+        let connect = new Connect()
+        axios.post(connect.host + connect.ip.submitRemark
+        + '?account=' + this.user.userName + '&bookno='
+        +row.bookno + '&buyTime=' + row.buyTime + '&judge'
+        +this.remark[index] +'&score='+this.value[index],{
 
-          }).then(resp=>{
-          this.$message.success(resp.data.message)
-          },resp=>{
-          if(typeof(resp.data) === undefined || resp.data === null ){
-                this.$message.error('网络连接失败')
-              }else{
-                this.$message.error(resp.data.message)
-              }
+        }).then(resp=>{
+          row.score = this.value[index],
+          row.judge = this.remark[index]
+          this.$message.success('提交评论成功')
+        },resp=>{
+          if(!resp.data){
+            this.$message.error('网络连接失败')
+          }else{
+            this.$message.error(resp.data.message)
+          }
         })
-
-        }).catch(_=>{
-
-        })
-        console.log(this.value)
       },
-      submitJudge(index,row){
-        //提交评价
-        console.log(index)
-        console.log("这是我的评价哦")
-      }
+      submitRemark(row,index){
+        if(this.value[index] === null || this.value[index] === 0){
+          this.$message.error('请打分')
+        }else if(!this.remark[index]){
+          this.$message.error('请编写评价')
+        }else if(this.remark[index] < 10){
+          this.$message.error('评价不得少于十字')
+        }else{
+          this.submit(row,index)
+        }
+      },
     }
 }
 </script>

@@ -7,7 +7,7 @@ import axios from "axios"
 export default class Connect{
     constructor(){
       this.response,
-      this.host = "http://127.0.0.1:8888",
+        this.host = "http://10.236.132.50:8888",
       this.ip = {
          login:'/userLogin',
          register:'/userSign',
@@ -62,7 +62,9 @@ export default class Connect{
          addBookCata:'/addcatalog',
 
          getAllJudge:'/getAllJudge', //得到这本书的所有评论
-         downloadBooks: '/downloadBooks',//下载电子书 
+         downloadBooks: '/downloadBooks',//下载电子书
+
+         submitRemark:'/updateJudge'//提交评论
 
       }
     }

@@ -83,6 +83,9 @@ export const sideRoutes = [
       name:'admin',
       path:'/index/admin',
       component:adminSide,
+      meta:{
+        admin:true
+      },
       children:[
         {
           name : 'adminUser',

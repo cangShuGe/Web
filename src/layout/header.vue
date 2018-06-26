@@ -219,6 +219,7 @@ export default {
         verify(){
             // 登录信息验证
             if(this.form.username == '123' && this.form.password == '123'){
+              this.$store.commit('set_admin',true)
               this.$router.push({name:'admin'})
               this.dialogFormVisible = false
               return ;
