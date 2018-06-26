@@ -115,7 +115,7 @@ import {formatDate} from '@/utils/filters.js'
         let connect = new Connect()
         axios.post(connect.host+connect.ip.getAllJudge+"?bookno="+this.id,{
         }).then(resp=>{
-          this.$message.success(resp.data.message)
+         //this.$message.success(resp.data.message)
           this.tableData=resp.data.data //由于是数组 在用到的地方使用
           console.log("-------------------------")
           console.log(this.tableData)
